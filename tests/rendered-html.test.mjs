@@ -26,7 +26,7 @@ test("server-renders the bilingual SmartBill landing page", async () => {
   assert.match(html, /<title>SmartBill \| مصروفاتك تحت control<\/title>/i);
   assert.match(html, /<meta[^>]*name="description"[^>]*content="مصروفاتك تحت control، وفواتيرك مشفرة على جهازك بذكاء وخصوصية\. SmartBill: Private, on-device expense tracking and instant receipt scanning\."/i);
   assert.match(html, /<link rel="icon" href="\/favicon\.ico"[^>]*>/i);
-  assert.match(html, /<link rel="icon"[^>]*href="\/icon\.png"[^>]*sizes="32x32"/i);
+  assert.match(html, /<link rel="icon"[^>]*href="\/icon-32\.png"[^>]*sizes="32x32"/i);
   assert.match(html, /<link rel="icon"[^>]*href="\/icon\.png"[^>]*sizes="192x192"/i);
   assert.match(html, /<link rel="apple-touch-icon"[^>]*href="\/apple-touch-icon\.png"/i);
   assert.match(html, /<meta[^>]*property="og:title"[^>]*content="SmartBill \| مصروفاتك تحت control"/i);
@@ -38,6 +38,8 @@ test("server-renders the bilingual SmartBill landing page", async () => {
   assert.match(html, /<meta[^>]*name="twitter:title"[^>]*content="SmartBill \| مصروفاتك تحت control"/i);
   assert.match(html, /<meta[^>]*name="twitter:description"[^>]*content="مصروفاتك تحت control، وفواتيرك مشفرة على جهازك بذكاء وخصوصية\. SmartBill: Private, on-device expense tracking and instant receipt scanning\."/i);
   assert.match(html, /<meta[^>]*name="twitter:image"[^>]*content="https:\/\/smartbill\.dev\/og-image\.png"/i);
+  assert.match(html, /property="og:image:secure_url"[^>]*content="https:\/\/smartbill\.dev\/og-image\.png"/i);
+  assert.match(html, /<link rel="manifest" href="\/manifest\.webmanifest"/i);
   assert.match(html, /class="nav-page-link"/);
   assert.match(html, /id="waitlist"/);
   assert.match(html, /type="email"/);

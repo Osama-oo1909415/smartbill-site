@@ -14,11 +14,13 @@ export const metadata: Metadata = {
     icons: {
       icon: [
         { url: "/favicon.ico", type: "image/x-icon", sizes: "any" },
-        { url: "/icon.png", type: "image/png", sizes: "32x32" },
+        { url: "/icon-32.png", type: "image/png", sizes: "32x32" },
         { url: "/icon.png", type: "image/png", sizes: "192x192" },
       ],
+      shortcut: [{ url: "/favicon.ico", type: "image/x-icon" }],
       apple: [{ url: "/apple-touch-icon.png", type: "image/png", sizes: "180x180" }],
     },
+    manifest: "/manifest.webmanifest",
     openGraph: {
       title: siteTitle,
       description: siteDescription,
@@ -26,13 +28,13 @@ export const metadata: Metadata = {
       url: siteUrl,
       locale: "ar_SA",
       alternateLocale: ["en_US"],
-      images: [{ url: `${siteUrl}/og-image.png`, width: 1200, height: 630, alt: siteTitle }],
+      images: [{ url: `${siteUrl}/og-image.png`, width: 1200, height: 630, type: "image/png", alt: siteTitle }],
     },
     twitter: {
       card: "summary_large_image",
       title: siteTitle,
       description: siteDescription,
-      images: [`${siteUrl}/og-image.png`],
+      images: [{ url: `${siteUrl}/og-image.png`, alt: siteTitle }],
     },
 };
 
@@ -40,5 +42,5 @@ const preferenceScript = `(function(){try{var l=localStorage.getItem('smartbill-
 const googleAnalyticsId = "G-BQFVFK5N91";
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="ar" dir="rtl" data-theme="light" suppressHydrationWarning><head><script dangerouslySetInnerHTML={{ __html: preferenceScript }} /></head><body><Script async src={`https://www.googletagmanager.com/gtag/js?id=${googleAnalyticsId}`} strategy="afterInteractive" /><Script id="google-analytics" strategy="afterInteractive">{`window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', '${googleAnalyticsId}');`}</Script><PreferencesProvider>{children}</PreferencesProvider></body></html>;
+  return <html lang="ar" dir="rtl" data-theme="light" suppressHydrationWarning><head><script dangerouslySetInnerHTML={{ __html: preferenceScript }} /><meta property="og:image:secure_url" content={`${siteUrl}/og-image.png`} /><meta property="og:image:type" content="image/png" /><link rel="image_src" href={`${siteUrl}/og-image.png`} /></head><body><Script async src={`https://www.googletagmanager.com/gtag/js?id=${googleAnalyticsId}`} strategy="afterInteractive" /><Script id="google-analytics" strategy="afterInteractive">{`window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', '${googleAnalyticsId}');`}</Script><PreferencesProvider>{children}</PreferencesProvider></body></html>;
 }

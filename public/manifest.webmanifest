@@ -1,0 +1,16 @@
+{
+  "name": "SmartBill | مصروفاتك تحت control",
+  "short_name": "SmartBill",
+  "description": "مصروفاتك أوضح، وخصوصيتك لك.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f6f8fc",
+  "theme_color": "#0b1834",
+  "lang": "ar",
+  "dir": "rtl",
+  "icons": [
+    { "src": "/icon-32.png", "sizes": "32x32", "type": "image/png" },
+    { "src": "/icon.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
