@@ -1,21 +1,39 @@
 import type { Metadata } from "next";
-import { headers } from "next/headers";
 import { PreferencesProvider } from "./site-preferences";
 import "./globals.css";
 
-export async function generateMetadata(): Promise<Metadata> {
-  const requestHeaders = await headers();
-  const host = requestHeaders.get("x-forwarded-host") ?? requestHeaders.get("host") ?? "localhost:3000";
-  const protocol = requestHeaders.get("x-forwarded-proto") ?? (host.startsWith("localhost") ? "http" : "https");
-  const origin = `${protocol}://${host}`;
-  return {
-    title: { default: "SmartBill | Clearer finances. Privacy that stays yours.", template: "%s | SmartBill" },
-    description: "SmartBill is a bilingual, local-first personal finance app with on-device receipt OCR, a built-in assistant, and clear reports.",
-    icons: { icon: "/app-icon.png", apple: "/app-icon.png" },
-    openGraph: { title: "SmartBill | مصروفاتك أوضح. وخصوصيتك لك.", description: "Arabic and English. Light and dark. On-device receipt OCR and private financial guidance.", type: "website", locale: "ar_SA", alternateLocale: ["en_US"], images: [{ url: `${origin}/og-bilingual.png`, width: 1680, height: 945, alt: "SmartBill — clearer finances with privacy that starts on your device" }] },
-    twitter: { card: "summary_large_image", title: "SmartBill | Clearer finances. Privacy that stays yours.", description: "Bilingual, local-first finance with on-device OCR.", images: [`${origin}/og-bilingual.png`] },
-  };
-}
+const siteUrl = "https://smartbill.dev";
+const siteTitle = "SmartBill | مصروفاتك تحت control";
+const siteDescription = "مصروفاتك تحت control، وفواتيرك مشفرة على جهازك بذكاء وخصوصية. SmartBill: Private, on-device expense tracking and instant receipt scanning.";
+
+export const metadata: Metadata = {
+    metadataBase: new URL(siteUrl),
+    title: { default: siteTitle, template: "%s | SmartBill" },
+    description: siteDescription,
+    icons: {
+      icon: [
+        { url: "/favicon.ico", type: "image/x-icon", sizes: "any" },
+        { url: "/icon.png", type: "image/png", sizes: "32x32" },
+        { url: "/icon.png", type: "image/png", sizes: "192x192" },
+      ],
+      apple: [{ url: "/apple-touch-icon.png", type: "image/png", sizes: "180x180" }],
+    },
+    openGraph: {
+      title: siteTitle,
+      description: siteDescription,
+      type: "website",
+      url: siteUrl,
+      locale: "ar_SA",
+      alternateLocale: ["en_US"],
+      images: [{ url: `${siteUrl}/og-image.png`, width: 1200, height: 630, alt: siteTitle }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: siteTitle,
+      description: siteDescription,
+      images: [`${siteUrl}/og-image.png`],
+    },
+};
 
 const preferenceScript = `(function(){try{var l=localStorage.getItem('smartbill-language')||'ar';var t=localStorage.getItem('smartbill-theme')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');document.documentElement.lang=l;document.documentElement.dir=l==='ar'?'rtl':'ltr';document.documentElement.dataset.theme=t}catch(e){}})();`;
 
