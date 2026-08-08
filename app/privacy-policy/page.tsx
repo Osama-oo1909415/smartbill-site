@@ -35,6 +35,10 @@ const policy = {
       "التصدير: الحساب ← تصدير ينشئ ملف ZIP يحتوي بياناتك وجداولها وملفات الإيصالات المحلية القابلة للقراءة، مع استثناء بيانات الاعتماد ورموز الإشعارات ومفاتيح التشفير ومعرّفات الأجهزة وبيانات المزامنة الداخلية.",
       "الحذف: الحساب ← حذف الحساب يزيل سجلاتك السحابية ونسخة الجهاز. أما إزالة البيانات من هذا الجهاز فهي إجراء منفصل يُبقي الحساب قائماً.",
     ]],
+    ["تحليلات الموقع", [
+      "يستخدم موقع SmartBill Google Analytics لقياس الزيارات وفهم استخدام الصفحات وتحسين الموقع. قد تعالج Google بيانات التصفح والجهاز وفق سياساتها الخاصة.",
+      "لا نرسل إلى Google Analytics سجلاتك المالية أو صور الإيصالات أو محتوى المساعد.",
+    ]],
     ["الاحتفاظ والمشاركة", [
       "تبقى سجلاتك في تخزينك المشفّر (على جهازك أو في حسابك السحابي الخاص) حتى تحذفها أنت أو تحذف حسابك. لا يبيع SmartBill بياناتك الشخصية أبداً، ولا يشاركها مع المعلنين أو أي جهة خارجية لأغراض تسويقية.",
       "جميع بياناتك المالية مشفّرة بالكامل أثناء التخزين والنقل، ولا يمكن لأي موظف أو طرف خارجي قراءة محتواها.",
@@ -70,6 +74,10 @@ const policy = {
     ["Your control", [
       "Export: Account → Export produces a portable ZIP with your data, spreadsheets, and readable local receipt files. Credentials, push tokens, encryption keys, device identifiers, and sync internals are excluded.",
       "Delete: Account → Delete account removes your cloud records and the device copy. Removing data from this device only is a separate action that leaves the account intact.",
+    ]],
+    ["Website analytics", [
+      "The SmartBill website uses Google Analytics to measure visits, understand page usage, and improve the site. Google may process browsing and device data under its own policies.",
+      "We do not send financial records, receipt images, or assistant content to Google Analytics.",
     ]],
     ["Retention and sharing", [
       "Your records remain in your encrypted storage (on your device or in your private cloud account) until you delete them or delete your account. SmartBill never sells your personal data and does not share it with advertisers or any third party for marketing purposes.",
