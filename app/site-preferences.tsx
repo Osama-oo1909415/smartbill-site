@@ -19,14 +19,17 @@ export function PreferencesProvider({ children }: { children: React.ReactNode })
   const [theme, setTheme] = useState<SiteTheme>("light");
 
   useEffect(() => {
-    const savedLang = localStorage.getItem("smartbill-language");
-    const savedTheme = localStorage.getItem("smartbill-theme");
-    if (savedLang === "ar" || savedLang === "en") setLang(savedLang);
-    if (savedTheme === "light" || savedTheme === "dark") {
-      setTheme(savedTheme);
-    } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-      setTheme("dark");
-    }
+    const frame = requestAnimationFrame(() => {
+      const savedLang = localStorage.getItem("smartbill-language");
+      const savedTheme = localStorage.getItem("smartbill-theme");
+      if (savedLang === "ar" || savedLang === "en") setLang(savedLang);
+      if (savedTheme === "light" || savedTheme === "dark") {
+        setTheme(savedTheme);
+      } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+        setTheme("dark");
+      }
+    });
+    return () => cancelAnimationFrame(frame);
   }, []);
 
   useEffect(() => {

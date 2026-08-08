@@ -1,7 +1,20 @@
 import { getDb } from "../../../db";
 import { waitlistEntries } from "../../../db/schema";
+import { count } from "drizzle-orm";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+export async function GET() {
+  try {
+    const [result] = await getDb().select({ value: count() }).from(waitlistEntries);
+    return Response.json(
+      { count: result?.value ?? 0 },
+      { headers: { "cache-control": "public, max-age=60, stale-while-revalidate=300" } },
+    );
+  } catch {
+    return Response.json({ error: "waitlist_unavailable" }, { status: 500 });
+  }
+}
 
 export async function POST(request: Request) {
   try {

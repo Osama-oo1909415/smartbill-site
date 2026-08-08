@@ -6,17 +6,18 @@ import { useSitePreferences } from "./site-preferences";
 const chromeCopy = {
   ar: {
     nav: [
-      ["/#how", "كيف يعمل"],
-      ["/#features", "المزايا"],
-      ["/about", "عن SmartBill"],
-      ["/faq", "الأسئلة الشائعة"],
+      ["/#how", "كيف يعمل", false],
+      ["/#features", "المزايا", false],
+      ["/about", "عن SmartBill", true],
+      ["/faq", "الأسئلة الشائعة", true],
     ],
     cta: "سجّل اهتمامك",
     menu: "القائمة",
     language: "Switch to English",
     themeLight: "تفعيل الوضع الفاتح",
     themeDark: "تفعيل الوضع الداكن",
-    footerText: "إدارة مالية أوضح، وخصوصية تبدأ من جهازك.",
+    footerText: "من الفاتورة إلى تقرير مفهوم، بخطوات أقل وتحكّم أكبر.",
+    fullPage: "صفحة مستقلة",
     product: "المنتج",
     company: "المعلومات",
     legal: "الثقة والخصوصية",
@@ -34,17 +35,18 @@ const chromeCopy = {
   },
   en: {
     nav: [
-      ["/#how", "How it works"],
-      ["/#features", "Features"],
-      ["/about", "About SmartBill"],
-      ["/faq", "FAQ"],
+      ["/#how", "How it works", false],
+      ["/#features", "Features", false],
+      ["/about", "About SmartBill", true],
+      ["/faq", "FAQ", true],
     ],
     cta: "Join the waitlist",
     menu: "Menu",
     language: "التبديل إلى العربية",
     themeLight: "Use light mode",
     themeDark: "Use dark mode",
-    footerText: "Clearer finances, with privacy that starts on your device.",
+    footerText: "From receipt to useful report, with fewer steps and more control.",
+    fullPage: "Full page",
     product: "Product",
     company: "Information",
     legal: "Trust & privacy",
@@ -75,7 +77,7 @@ export function SiteHeader() {
         </Link>
 
         <div className="nav-links">
-          {t.nav.map(([href, label]) => <Link key={href} href={href}>{label}</Link>)}
+          {t.nav.map(([href, label, isPage]) => <Link key={href} href={href} className={isPage ? "nav-page-link" : undefined}>{label}{isPage ? <span aria-hidden="true" title={t.fullPage}>↗</span> : null}</Link>)}
         </div>
 
         <div className="nav-actions">
@@ -89,8 +91,8 @@ export function SiteHeader() {
           <details className="mobile-menu">
             <summary aria-label={t.menu}>☰</summary>
             <div>
-              {t.nav.map(([href, label]) => <Link key={href} href={href}>{label}</Link>)}
-              <Link href="/contact">{t.links.contact}</Link>
+              {t.nav.map(([href, label, isPage]) => <Link key={href} href={href} className={isPage ? "nav-page-link" : undefined}>{label}{isPage ? <span aria-hidden="true">↗</span> : null}</Link>)}
+              <Link className="nav-page-link" href="/contact">{t.links.contact}<span aria-hidden="true">↗</span></Link>
             </div>
           </details>
         </div>

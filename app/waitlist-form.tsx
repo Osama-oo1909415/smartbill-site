@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import Link from "next/link";
 import { useSitePreferences } from "./site-preferences";
 
@@ -9,6 +9,7 @@ export function WaitlistForm({ compact = false }: { compact?: boolean }) {
   const [email, setEmail] = useState("");
   const [website, setWebsite] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [waitlistCount, setWaitlistCount] = useState<number | null>(null);
 
   const t = lang === "ar" ? {
     label: "بريدك الإلكتروني",
@@ -19,6 +20,7 @@ export function WaitlistForm({ compact = false }: { compact?: boolean }) {
     error: "تعذّر التسجيل الآن. حاول مرة أخرى.",
     consent: "بالتسجيل، توافق على استخدام بريدك لإشعارات الإطلاق فقط وفق",
     privacy: "سياسة الخصوصية",
+    count: (value: number) => value > 0 ? `${value.toLocaleString("ar")} مهتماً سجّلوا حتى الآن — رقم حقيقي من قائمة الانتظار.` : "فُتحت القائمة حديثاً — كن من أوائل المنضمين.",
   } : {
     label: "Your email address",
     placeholder: "name@example.com",
@@ -28,7 +30,19 @@ export function WaitlistForm({ compact = false }: { compact?: boolean }) {
     error: "We couldn’t save your email right now. Please try again.",
     consent: "By joining, you agree to receive launch-only updates under our",
     privacy: "privacy policy",
+    count: (value: number) => value > 0 ? `${value.toLocaleString("en")} people have joined so far — a live waitlist count.` : "The list has just opened — be among the first to join.",
   };
+
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch("/api/waitlist", { signal: controller.signal })
+      .then((response) => response.ok ? response.json() : Promise.reject())
+      .then((payload: { count?: unknown }) => {
+        if (typeof payload.count === "number" && Number.isFinite(payload.count)) setWaitlistCount(payload.count);
+      })
+      .catch(() => undefined);
+    return () => controller.abort();
+  }, []);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -40,6 +54,8 @@ export function WaitlistForm({ compact = false }: { compact?: boolean }) {
         body: JSON.stringify({ email, language: lang, website }),
       });
       if (!response.ok) throw new Error("waitlist_failed");
+      const result = await response.json() as { existing?: boolean };
+      if (!result.existing) setWaitlistCount((value) => value === null ? value : value + 1);
       setStatus("success");
       setEmail("");
     } catch {
@@ -57,6 +73,7 @@ export function WaitlistForm({ compact = false }: { compact?: boolean }) {
       </form>
       {status === "success" ? <p className="form-message success-message" role="status">✓ {t.success}</p> : null}
       {status === "error" ? <p className="form-message error-message" role="alert">{t.error}</p> : null}
+      {waitlistCount !== null ? <p className="waitlist-count" aria-live="polite"><span aria-hidden="true">●</span>{t.count(waitlistCount)}</p> : null}
       <small className="form-consent">{t.consent} <Link href="/privacy-policy">{t.privacy}</Link>.</small>
     </div>
   );
