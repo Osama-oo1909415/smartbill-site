@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
-import Link from "next/link";
+import Link from "./internal-link";
 import { useSitePreferences } from "./site-preferences";
 
 export function WaitlistForm({ compact = false }: { compact?: boolean }) {

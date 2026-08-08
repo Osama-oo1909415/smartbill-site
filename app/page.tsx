@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "./internal-link";
 import { SitePage } from "./site-chrome";
 import { useSitePreferences } from "./site-preferences";
 import { WaitlistForm } from "./waitlist-form";

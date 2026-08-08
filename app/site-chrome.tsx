@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "./internal-link";
 import { useSitePreferences } from "./site-preferences";
 
 const chromeCopy = {
