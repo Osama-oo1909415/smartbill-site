@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { PreferencesProvider } from "./site-preferences";
 import "./globals.css";
 
@@ -36,7 +37,8 @@ export const metadata: Metadata = {
 };
 
 const preferenceScript = `(function(){try{var l=localStorage.getItem('smartbill-language')||'ar';var t=localStorage.getItem('smartbill-theme')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');document.documentElement.lang=l;document.documentElement.dir=l==='ar'?'rtl':'ltr';document.documentElement.dataset.theme=t}catch(e){}})();`;
+const googleAnalyticsId = "G-BQFVFK5N91";
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="ar" dir="rtl" data-theme="light" suppressHydrationWarning><head><script dangerouslySetInnerHTML={{ __html: preferenceScript }} /></head><body><PreferencesProvider>{children}</PreferencesProvider></body></html>;
+  return <html lang="ar" dir="rtl" data-theme="light" suppressHydrationWarning><head><script dangerouslySetInnerHTML={{ __html: preferenceScript }} /></head><body><Script async src={`https://www.googletagmanager.com/gtag/js?id=${googleAnalyticsId}`} strategy="afterInteractive" /><Script id="google-analytics" strategy="afterInteractive">{`window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', '${googleAnalyticsId}');`}</Script><PreferencesProvider>{children}</PreferencesProvider></body></html>;
 }

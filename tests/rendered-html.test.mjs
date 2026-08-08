@@ -65,5 +65,8 @@ test("keeps trust, responsive, and real-count behavior in source", async () => {
   assert.match(css, /@media\(max-width:360px\)/);
   assert.match(css, /prefers-reduced-motion:reduce/);
   assert.match(layout, /og-image\.png/);
+  assert.match(layout, /googletagmanager\.com\/gtag\/js\?id=/);
+  assert.match(layout, /G-BQFVFK5N91/);
+  assert.match(layout, /gtag\('config'/);
   assert.doesNotMatch(packageJson, /react-loading-skeleton/);
 });
