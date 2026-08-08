@@ -42,6 +42,7 @@ test("server-renders the bilingual SmartBill landing page", async () => {
   assert.match(html, /<link rel="manifest" href="\/manifest\.webmanifest"/i);
   assert.match(html, /class="nav-page-link"/);
   assert.match(html, /id="waitlist"/);
+  assert.match(html, /smartbill-app-screen\.png/);
   assert.match(html, /type="email"/);
   assert.doesNotMatch(html, /codex-preview|Building your site|react-loading-skeleton/i);
 });
@@ -58,6 +59,7 @@ test("keeps trust, responsive, and real-count behavior in source", async () => {
   ]);
 
   assert.match(page, /<WaitlistForm \/>/);
+  assert.match(page, /smartbill-app-screen\.png/);
   assert.match(page, /id="features"/);
   assert.match(page, /id="privacy"/);
   assert.match(chrome, /nav-page-link/);

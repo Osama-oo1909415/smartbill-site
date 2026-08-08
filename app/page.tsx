@@ -116,7 +116,6 @@ function FeatureVisual({ type, lang }: { type: string; lang: "ar" | "en" }) {
 export default function Home() {
   const { lang } = useSitePreferences();
   const t = copy[lang];
-  const p = t.phone;
 
   return (
     <SitePage>
@@ -132,20 +131,7 @@ export default function Home() {
           </div>
 
           <div className="hero-product" aria-label={lang === "ar" ? "معاينة تطبيق SmartBill" : "SmartBill app preview"}>
-            <div className="product-halo halo-one" /><div className="product-halo halo-two" />
-            <div className="floating-note note-security"><i>✓</i><span>{p.saved}<small>{lang === "ar" ? "خصوصية مدمجة" : "Private by design"}</small></span></div>
-            <div className="floating-note note-ocr"><b>98%</b><span>{p.accuracy}<small>OCR</small></span></div>
-            <div className="phone"><div className="phone-frame"><div className="phone-notch" /><div className="phone-screen" dir={lang === "ar" ? "rtl" : "ltr"}>
-              <div className="phone-status"><b>9:41</b><span>● ◒ 〽</span></div>
-              <div className="app-head"><div><small>{p.greeting}</small><b>{p.name} 👋</b></div><div className="app-avatar">{lang === "ar" ? "أ" : "A"}</div></div>
-              <div className="balance-card"><small>{p.balance}</small><strong>24,750 <i>{p.currency}</i></strong><div className="balance-stats"><span><i className="income-dot" />{p.income}<b>+15,200</b></span><span><i className="spent-dot" />{p.spent}<b>−8,420</b></span></div></div>
-              <div className="overview-head"><b>{p.overview}</b><small>{p.month}</small></div>
-              <div className="overview-card"><div className="spend-ring"><span><small>{p.spent}</small><b>8,420</b></span></div><div className="category-list"><span><i className="cat-blue" /><b>{p.shopping}</b><small>26%</small></span><span><i className="cat-green" /><b>{p.food}</b><small>19%</small></span><span><i className="cat-purple" /><b>{p.bills}</b><small>17%</small></span></div></div>
-              <div className="overview-head recent-head"><b>{p.recent}</b><small>{p.all}</small></div>
-              <div className="transaction-row"><div className="tx-icon">J</div><span><b>{lang === "ar" ? "مكتبة جرير" : "Jarir Bookstore"}</b><small>{p.shopping} · {p.today}</small></span><strong>−268.80</strong></div>
-              <div className="transaction-row"><div className="tx-icon green">C</div><span><b>{lang === "ar" ? "كارفور" : "Carrefour"}</b><small>{p.food} · {p.yesterday}</small></span><strong>−215.00</strong></div>
-              <div className="app-dock"><i>⌂</i><i>⇄</i><button aria-label={lang === "ar" ? "المسح الضوئي" : "Scan"}>⌗</button><i>▥</i><i>●</i></div>
-            </div></div></div>
+            <img className="real-app-screen" src="/smartbill-app-screen.png" alt={lang === "ar" ? "لقطة شاشة حقيقية من تطبيق SmartBill" : "Authentic SmartBill app screen"} width="591" height="1024" />
           </div>
         </div>
         <div className="hero-bottom shell">{t.ribbon.map((item, index) => <span key={item}>{item}{index < 3 ? <i /> : null}</span>)}</div>
