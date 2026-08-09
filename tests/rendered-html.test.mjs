@@ -2,13 +2,13 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 
-async function render(path = "/") {
+async function render(path = "/", cookie) {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
   workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}-${path}`);
   const { default: worker } = await import(workerUrl.href);
 
   return worker.fetch(
-    new Request(`http://localhost${path}`, { headers: { accept: "text/html" } }),
+    new Request(`http://localhost${path}`, { headers: { accept: "text/html", ...(cookie ? { cookie } : {}) } }),
     { ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) } },
     { waitUntil() {}, passThroughOnException() {} },
   );
@@ -47,6 +47,14 @@ test("server-renders the bilingual SmartBill landing page", async () => {
   assert.doesNotMatch(html, /codex-preview|Building your site|react-loading-skeleton/i);
 });
 
+test("uses NEXT_LOCALE to render the document language on the server", async () => {
+  const response = await render("/about", "NEXT_LOCALE=en");
+  const html = await response.text();
+
+  assert.equal(response.status, 200);
+  assert.match(html, /<html lang="en" dir="ltr"/i);
+});
+
 test("keeps trust, responsive, and real-count behavior in source", async () => {
   const [page, chrome, about, waitlistRoute, css, layout, packageJson] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
@@ -74,5 +82,21 @@ test("keeps trust, responsive, and real-count behavior in source", async () => {
   assert.match(layout, /googletagmanager\.com\/gtag\/js\?id=/);
   assert.match(layout, /G-BQFVFK5N91/);
   assert.match(layout, /gtag\('config'/);
+  assert.match(layout, /localStorage\.getItem\('lang'\)/);
+  assert.match(layout, /cookies\(\)\)\.get\("NEXT_LOCALE"\)/);
+  assert.match(layout, /<html lang=\{locale\} dir=\{locale === "ar" \? "rtl" : "ltr"\}/);
   assert.doesNotMatch(packageJson, /react-loading-skeleton/);
+});
+
+test("persists and synchronizes the selected site language", async () => {
+  const preferences = await readFile(new URL("../app/site-preferences.tsx", import.meta.url), "utf8");
+
+  assert.match(preferences, /const LANGUAGE_STORAGE_KEY = "lang"/);
+  assert.match(preferences, /localStorage\.setItem\(LANGUAGE_STORAGE_KEY, nextLanguage\)/);
+  assert.match(preferences, /document\.cookie = `\$\{LANGUAGE_COOKIE_NAME\}=\$\{nextLanguage\}; path=\/; max-age=31536000/);
+  assert.match(preferences, /function languageFromCookie\(\)/);
+  assert.match(preferences, /localStorage\.getItem\(LANGUAGE_STORAGE_KEY\)/);
+  assert.match(preferences, /window\.addEventListener\("storage", syncLanguageAcrossTabs\)/);
+  assert.match(preferences, /document\.documentElement\.dir = lang === "ar" \? "rtl" : "ltr"/);
+  assert.match(preferences, /document\.documentElement\.lang = lang/);
 });

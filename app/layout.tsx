@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import Script from "next/script";
-import { PreferencesProvider } from "./site-preferences";
+import { PreferencesProvider, type SiteLanguage } from "./site-preferences";
 import "./globals.css";
 
 const siteUrl = "https://smartbill.dev";
@@ -38,9 +39,14 @@ export const metadata: Metadata = {
     },
 };
 
-const preferenceScript = `(function(){try{var l=localStorage.getItem('smartbill-language')||'ar';var t=localStorage.getItem('smartbill-theme')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');document.documentElement.lang=l;document.documentElement.dir=l==='ar'?'rtl':'ltr';document.documentElement.dataset.theme=t}catch(e){}})();`;
+const preferenceScript = `(function(){try{var c=document.cookie.match(/(?:^|; )NEXT_LOCALE=([^;]*)/);var l=c?decodeURIComponent(c[1]):(localStorage.getItem('lang')||localStorage.getItem('smartbill-language')||'ar');if(l!=='ar'&&l!=='en')l='ar';var t=localStorage.getItem('smartbill-theme')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');document.documentElement.lang=l;document.documentElement.dir=l==='ar'?'rtl':'ltr';document.documentElement.dataset.theme=t}catch(e){}})();`;
 const googleAnalyticsId = "G-BQFVFK5N91";
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="ar" dir="rtl" data-theme="light" suppressHydrationWarning><head><script dangerouslySetInnerHTML={{ __html: preferenceScript }} /><meta property="og:image:secure_url" content={`${siteUrl}/og-image.png`} /><meta property="og:image:type" content="image/png" /><link rel="image_src" href={`${siteUrl}/og-image.png`} /></head><body><Script async src={`https://www.googletagmanager.com/gtag/js?id=${googleAnalyticsId}`} strategy="afterInteractive" /><Script id="google-analytics" strategy="afterInteractive">{`window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', '${googleAnalyticsId}');`}</Script><PreferencesProvider>{children}</PreferencesProvider></body></html>;
+function localeFromCookie(value: string | undefined): SiteLanguage {
+  return value === "en" || value === "ar" ? value : "ar";
+}
+
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const locale = localeFromCookie((await cookies()).get("NEXT_LOCALE")?.value);
+  return <html lang={locale} dir={locale === "ar" ? "rtl" : "ltr"} data-theme="light" suppressHydrationWarning><head><script dangerouslySetInnerHTML={{ __html: preferenceScript }} /><meta property="og:image:secure_url" content={`${siteUrl}/og-image.png`} /><meta property="og:image:type" content="image/png" /><link rel="image_src" href={`${siteUrl}/og-image.png`} /></head><body><Script async src={`https://www.googletagmanager.com/gtag/js?id=${googleAnalyticsId}`} strategy="afterInteractive" /><Script id="google-analytics" strategy="afterInteractive">{`window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', '${googleAnalyticsId}');`}</Script><PreferencesProvider initialLanguage={locale}>{children}</PreferencesProvider></body></html>;
 }
