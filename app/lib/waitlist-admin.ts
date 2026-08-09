@@ -8,9 +8,10 @@ type AdminSession = { username: string; exp: number };
 
 export async function authenticateWaitlistAdmin(username: string, password: string): Promise<boolean> {
   const expectedUsername = getRuntimeEnv("WAITLIST_ADMIN_USERNAME");
-  const expectedPassword = getRuntimeEnv("WAITLIST_ADMIN_PASSWORD");
-  if (!expectedUsername || !expectedPassword) return false;
-  return constantTimeEqual(username.trim(), expectedUsername) && constantTimeEqual(password, expectedPassword);
+  const expectedPasswordDigest = getRuntimeEnv("WAITLIST_ADMIN_PASSWORD_DIGEST");
+  const secret = getRuntimeEnv("WAITLIST_ADMIN_SESSION_SECRET");
+  if (!expectedUsername || !expectedPasswordDigest || !secret) return false;
+  return constantTimeEqual(username.trim(), expectedUsername) && constantTimeEqual(await sign(password, secret), expectedPasswordDigest);
 }
 
 export async function createWaitlistAdminSession(username: string): Promise<string | null> {
