@@ -64,6 +64,8 @@ test("keeps trust, responsive, and real-count behavior in source", async () => {
   assert.match(page, /id="privacy"/);
   assert.match(chrome, /nav-page-link/);
   assert.match(about, /github\.com\/Osama-oo1909415/);
+  assert.match(about, /linkedin\.com\/in\/osama-osman-950aa3194\//);
+  assert.doesNotMatch(about, /linkedin\.com\/in\/osama-yousif-eisa-osman/);
   assert.match(waitlistRoute, /export async function GET/);
   assert.match(waitlistRoute, /count\(\)/);
   assert.match(css, /@media\(max-width:360px\)/);
