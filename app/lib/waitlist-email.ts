@@ -4,7 +4,10 @@ type WaitlistEmailInput = { email: string; language: "ar" | "en"; entryId: numbe
 
 const SITE_URL = "https://smartbill.dev";
 const LOGO_URL = `${SITE_URL}/app-icon.png`;
-const APP_SCREEN_URL = `${SITE_URL}/smartbill-app-screen-nav-v2.png`;
+const APP_SCREEN_URLS = {
+  ar: `${SITE_URL}/smartbill-app-screen-nav-v2.png`,
+  en: `${SITE_URL}/smartbill-app-screen-nav-v2-en.png`,
+} as const;
 
 async function sendEmail(payload: Record<string, unknown>, idempotencyKey: string): Promise<boolean> {
   const apiKey = getRuntimeEnv("RESEND_API_KEY");
@@ -30,6 +33,7 @@ export async function sendWaitlistConfirmation({ email, language, entryId }: Wai
   const from = getRuntimeEnv("WAITLIST_FROM_EMAIL") ?? "SmartBill <noreply@update.smartbill.dev>";
   const replyTo = getRuntimeEnv("WAITLIST_REPLY_TO");
   const arabic = language === "ar";
+  const appScreenUrl = APP_SCREEN_URLS[language];
   const copy = arabic
     ? {
         subject: "تم استلام طلبك للانضمام إلى SmartBill",
@@ -108,7 +112,7 @@ export async function sendWaitlistConfirmation({ email, language, entryId }: Wai
             </td></tr>
             <tr><td class="email-padding" style="padding:26px 38px 10px;">
               <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="email-feature" style="background:#eef4ff;border:1px solid #d7e4fa;border-radius:18px;">
-                <tr><td style="padding:18px 18px 0;text-align:center;"><img class="hero-image" src="${APP_SCREEN_URL}" width="390" alt="${copy.imageAlt}" style="display:block;width:390px;max-width:100%;height:auto;margin:0 auto;border:0;border-radius:14px 14px 0 0;outline:none;text-decoration:none;background:#dce9ff;color:#173d86;font-family:${font};font-size:14px;line-height:1.5;" /></td></tr>
+                <tr><td style="padding:18px 18px 0;text-align:center;"><img class="hero-image" src="${appScreenUrl}" width="390" alt="${copy.imageAlt}" style="display:block;width:390px;max-width:100%;height:auto;margin:0 auto;border:0;border-radius:14px 14px 0 0;outline:none;text-decoration:none;background:#dce9ff;color:#173d86;font-family:${font};font-size:14px;line-height:1.5;" /></td></tr>
                 <tr><td style="padding:18px 22px 22px;text-align:${align};font-family:${font};"><strong class="email-title" style="display:block;color:#173d86;font-size:17px;line-height:1.45;">${copy.featureTitle}</strong><span class="email-muted" style="display:block;margin-top:6px;color:#61718e;font-size:14px;line-height:1.7;">${copy.featureBody}</span></td></tr>
               </table>
             </td></tr>

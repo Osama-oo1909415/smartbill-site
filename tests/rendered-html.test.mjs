@@ -68,6 +68,7 @@ test("keeps trust, responsive, and real-count behavior in source", async () => {
 
   assert.match(page, /<WaitlistForm \/>/);
   assert.match(page, /smartbill-app-screen-nav-v2\.png/);
+  assert.match(page, /smartbill-app-screen-nav-v2-en\.png/);
   assert.match(page, /id="features"/);
   assert.match(page, /id="privacy"/);
   assert.match(chrome, /nav-page-link/);
@@ -99,4 +100,16 @@ test("persists and synchronizes the selected site language", async () => {
   assert.match(preferences, /window\.addEventListener\("storage", syncLanguageAcrossTabs\)/);
   assert.match(preferences, /document\.documentElement\.dir = lang === "ar" \? "rtl" : "ltr"/);
   assert.match(preferences, /document\.documentElement\.lang = lang/);
+});
+
+test("uses an Arabic or English app screen to match the website and email locale", async () => {
+  const [page, waitlistEmail] = await Promise.all([
+    readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/lib/waitlist-email.ts", import.meta.url), "utf8"),
+  ]);
+
+  assert.match(page, /lang === "ar" \? "\/smartbill-app-screen-nav-v2\.png" : "\/smartbill-app-screen-nav-v2-en\.png"/);
+  assert.match(waitlistEmail, /const APP_SCREEN_URLS = \{/);
+  assert.match(waitlistEmail, /en: `\$\{SITE_URL\}\/smartbill-app-screen-nav-v2-en\.png`/);
+  assert.match(waitlistEmail, /const appScreenUrl = APP_SCREEN_URLS\[language\]/);
 });

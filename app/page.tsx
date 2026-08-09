@@ -131,7 +131,7 @@ export default function Home() {
           </div>
 
           <div className="hero-product" aria-label={lang === "ar" ? "معاينة تطبيق SmartBill" : "SmartBill app preview"}>
-            <img className="real-app-screen" src="/smartbill-app-screen-nav-v2.png" alt={lang === "ar" ? "واجهة SmartBill مع زر مسح OCR" : "SmartBill interface with OCR scan action"} width="591" height="1024" />
+            <img className="real-app-screen" src={lang === "ar" ? "/smartbill-app-screen-nav-v2.png" : "/smartbill-app-screen-nav-v2-en.png"} alt={lang === "ar" ? "واجهة SmartBill مع زر مسح OCR" : "SmartBill interface with OCR scan action"} width="591" height="1024" />
           </div>
         </div>
         <div className="hero-bottom shell">{t.ribbon.map((item, index) => <span key={item}>{item}{index < 3 ? <i /> : null}</span>)}</div>
