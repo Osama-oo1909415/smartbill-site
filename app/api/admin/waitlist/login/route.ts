@@ -1,4 +1,5 @@
 import { authenticateWaitlistAdmin, createWaitlistAdminSession, waitlistAdminCookieName } from "../../../../lib/waitlist-admin";
+import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
   const payload = (await request.json().catch(() => null)) as { username?: unknown; password?: unknown } | null;
@@ -7,5 +8,7 @@ export async function POST(request: Request) {
   if (!(await authenticateWaitlistAdmin(username, password))) return Response.json({ error: "invalid_credentials" }, { status: 401 });
   const session = await createWaitlistAdminSession(username.trim());
   if (!session) return Response.json({ error: "admin_login_unavailable" }, { status: 503 });
-  return new Response(JSON.stringify({ ok: true }), { status: 200, headers: { "content-type": "application/json", "Set-Cookie": `${waitlistAdminCookieName}=${session}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=${12 * 60 * 60}` } });
+  const response = NextResponse.json({ ok: true });
+  response.cookies.set(waitlistAdminCookieName, session, { httpOnly: true, secure: true, sameSite: "strict", maxAge: 12 * 60 * 60, path: "/" });
+  return response;
 }
