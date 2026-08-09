@@ -26,11 +26,3 @@ export async function sendWaitlistConfirmation({ email, language, entryId }: Wai
     : `<div style="font-family:Arial,sans-serif;line-height:1.8"><h2>We received your request</h2><p>Thanks for your interest in <strong>SmartBill</strong>.</p><p>We received your email and will let you know when early access opens.</p></div>`;
   return sendEmail({ from, to: [email], subject, html, text, ...(replyTo ? { reply_to: replyTo } : {}) }, `smartbill-waitlist-${entryId}`);
 }
-
-export async function sendWaitlistAdminMagicLink(email: string, link: string): Promise<boolean> {
-  const from = getRuntimeEnv("WAITLIST_FROM_EMAIL") ?? "SmartBill <noreply@update.smartbill.dev>";
-  return sendEmail({
-    from, to: [email], subject: "رابط دخول لوحة SmartBill", text: `افتح هذا الرابط للدخول إلى قائمة المسجلين: ${link}\nينتهي الرابط خلال 15 دقيقة.`,
-    html: `<div dir="rtl" style="font-family:Arial,sans-serif;line-height:1.8"><h2>دخول لوحة SmartBill</h2><p>افتح الرابط التالي للدخول إلى قائمة المسجلين. ينتهي خلال 15 دقيقة.</p><p><a href="${link}">فتح لوحة المسجلين</a></p></div>`,
-  }, `smartbill-admin-login-${crypto.randomUUID()}`);
-}
