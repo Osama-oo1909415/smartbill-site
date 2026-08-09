@@ -116,11 +116,6 @@ function FeatureVisual({ type, lang }: { type: string; lang: "ar" | "en" }) {
 export default function Home() {
   const { lang } = useSitePreferences();
   const t = copy[lang];
-  const androidTestingUrl = process.env.NEXT_PUBLIC_ANDROID_TESTING_URL;
-  const primaryHref = androidTestingUrl || "#waitlist";
-  const primaryLabel = androidTestingUrl
-    ? (lang === "ar" ? "تنزيل نسخة Android التجريبية" : "Get the Android beta")
-    : t.primary;
 
   return (
     <SitePage>
@@ -131,7 +126,7 @@ export default function Home() {
             <h1>{t.title}</h1>
             <p className="hero-lead">{t.lead}</p>
             <div className="quick-steps" aria-label={t.howKicker}>{t.stepsLine.map((step, index) => <span key={step}><b>{index + 1}</b>{step}{index < 2 ? <i aria-hidden="true">→</i> : null}</span>)}</div>
-            <div className="hero-actions"><a className="button primary-button" href={primaryHref}><span>{primaryLabel}</span><i aria-hidden="true">→</i></a><a className="button secondary-button" href="#how">{t.secondary}</a></div>
+            <div className="hero-actions"><a className="button primary-button" href="#waitlist"><span>{t.primary}</span><i aria-hidden="true">→</i></a><a className="button secondary-button" href="#how">{t.secondary}</a></div>
             <div className="hero-notes">{t.notes.map((note) => <span key={note}><i>✓</i>{note}</span>)}</div>
           </div>
 
