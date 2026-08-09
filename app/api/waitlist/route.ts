@@ -1,6 +1,7 @@
 import { getDb } from "../../../db";
 import { waitlistEntries } from "../../../db/schema";
 import { count } from "drizzle-orm";
+import { sendWaitlistConfirmation } from "../../lib/waitlist-email";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -24,7 +25,8 @@ export async function POST(request: Request) {
     const language = payload.language === "en" ? "en" : "ar";
     if (!email || email.length > 254 || !EMAIL_RE.test(email)) return Response.json({ error: "invalid_email" }, { status: 400 });
     const rows = await getDb().insert(waitlistEntries).values({ email, language }).onConflictDoNothing().returning({ id: waitlistEntries.id });
-    return Response.json({ ok: true, existing: rows.length === 0 }, { status: rows.length ? 201 : 200 });
+    const emailSent = rows.length ? await sendWaitlistConfirmation({ email, language, entryId: rows[0].id }) : false;
+    return Response.json({ ok: true, existing: rows.length === 0, emailSent }, { status: rows.length ? 201 : 200 });
   } catch {
     return Response.json({ error: "waitlist_unavailable" }, { status: 500 });
   }
