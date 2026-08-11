@@ -27,6 +27,21 @@ This starter does not use `wrangler.jsonc`.
 - `examples/d1/` contains an optional D1 example surface
 - `drizzle.config.ts` supports local migration generation when needed
 
+## Contact messages
+
+Contact form submissions are saved in the D1 `contact_messages` table and are
+available to the admin at `/admin/contact` after signing in through
+`/admin/waitlist/login`. The Reply action opens the administrator's email app
+with the sender addressed and the subject prefilled.
+
+For email notifications, set the Sites runtime secret/value
+`CONTACT_INBOX_EMAIL` to the inbox that should receive new messages. The site
+uses `WAITLIST_REPLY_TO` as a fallback, so existing waitlist email settings can
+continue to work without a second recipient setting. `RESEND_API_KEY` and a
+verified sender (`CONTACT_FROM_EMAIL` or `WAITLIST_FROM_EMAIL`) are required
+for delivery; messages remain in the admin inbox if notification delivery is
+not configured.
+
 ## Workspace Auth Headers
 
 Signed-in visitors receive both `oai-authenticated-user-id` and `oai-authenticated-user-email`. Private Sites require every visitor to sign in; public Sites may also have anonymous visitors, for whom neither header is present.

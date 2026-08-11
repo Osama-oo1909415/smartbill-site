@@ -33,9 +33,9 @@ export function ContactForm() {
 
   return (
     <form className="contact-form" onSubmit={submit}>
-      <div className="form-row"><label>{t.name}<input name="name" required maxLength={120} autoComplete="name" /></label><label>{t.email}<input name="email" type="email" required maxLength={254} autoComplete="email" inputMode="email" /></label></div>
-      <label>{t.topic}<select name="topic" required defaultValue=""><option value="" disabled>—</option>{t.topics.map((topic) => <option key={topic}>{topic}</option>)}</select></label>
-      <label>{t.message}<textarea name="message" required minLength={10} maxLength={2000} rows={7} /></label>
+      <div className="form-row"><label htmlFor="contact-name">{t.name}<input id="contact-name" name="name" required maxLength={120} autoComplete="name" /></label><label htmlFor="contact-email">{t.email}<input id="contact-email" name="email" type="email" required maxLength={254} autoComplete="email" inputMode="email" dir="ltr" /></label></div>
+      <label htmlFor="contact-topic">{t.topic}<select id="contact-topic" name="topic" required defaultValue=""><option value="" disabled>—</option>{t.topics.map((topic) => <option key={topic}>{topic}</option>)}</select></label>
+      <label htmlFor="contact-message">{t.message}<textarea id="contact-message" name="message" required minLength={10} maxLength={2000} rows={7} /></label>
       <input className="honeypot" name="website" tabIndex={-1} aria-hidden="true" autoComplete="off" />
       <button type="submit" disabled={status === "loading"}>{status === "loading" ? t.loading : t.submit}</button>
       {status === "success" ? <p className="form-message success-message" role="status">✓ {t.success}</p> : null}
