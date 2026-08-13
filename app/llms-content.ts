@@ -8,31 +8,27 @@ export const llmsText = `# SmartBill
 
 ## Product
 
-- [SmartBill home](${link("/en")}) — Product overview, early-access status, and the Capture → Review → Understand flow.
-- [About SmartBill](${link("/en/about")}) — Product principles, current availability, and project context.
-- [FAQ](${link("/en/faq")}) — Answers about local OCR, privacy, sync, the assistant, and availability.
+- [SmartBill home](${link("/en")}) - Product overview, early-access status, and the Capture -> Review -> Understand flow.
+- [About SmartBill](${link("/en/about")}) - Product principles, current availability, and project context.
+- [FAQ](${link("/en/faq")}) - Answers about local OCR, privacy, sync, the assistant, and availability.
 
 ## Trust and privacy
 
-- [Privacy policy](${link("/en/privacy-policy")}) — Current data handling, retention, deletion, and optional sync details.
-- [Terms of use](${link("/en/terms")}) — Current product boundaries and use terms.
-- [Contact SmartBill](${link("/en/contact")}) — Questions about early access, data requests, privacy, or technical support.
-
-## Guides
-
-- [Audience response systems](${link("/en/guides/audience-response-systems")}) — A practical editable guide to participation, privacy, accessibility, and responsible interpretation.
+- [Privacy policy](${link("/en/privacy-policy")}) - Current data handling, retention, deletion, and optional sync details.
+- [Terms of use](${link("/en/terms")}) - Current product boundaries and use terms.
+- [Contact SmartBill](${link("/en/contact")}) - Questions about early access, data requests, privacy, or technical support.
 
 ## Language versions
 
-- [Arabic home](${link("/ar")}) — Arabic RTL product overview.
-- [English home](${link("/en")}) — English product overview.
+- [Arabic home](${link("/ar")}) - Arabic RTL product overview.
+- [English home](${link("/en")}) - English product overview.
 `;
 
-export const llmsFullText = `# SmartBill — full site summary
+export const llmsFullText = `# SmartBill - full site summary
 
 ## What SmartBill is
 
-SmartBill is a mobile personal-finance app in early access. It is designed for people who want a clearer view of everyday spending without handing every financial detail to a general-purpose AI service. The product flow is Capture → Review → Understand: receipt information is extracted, shown as an editable draft, and then used in reports or bounded assistant responses after the user decides what to save.
+SmartBill is a mobile personal-finance app in early access. It is designed for people who want a clearer view of everyday spending without handing every financial detail to a general-purpose AI service. The product flow is Capture -> Review -> Understand: receipt information is extracted, shown as an editable draft, and then used in reports or bounded assistant responses after the user decides what to save.
 
 ## Current product status
 
@@ -59,8 +55,4 @@ The [FAQ](${link("/en/faq")}) answers whether the app is available, whether scan
 ### Contact
 
 The [Contact page](${link("/en/contact")}) accepts questions about early access, privacy, data, and technical issues. It asks visitors not to submit passwords, card numbers, or sensitive financial details.
-
-## Editorial guide
-
-The [Audience response systems guide](${link("/en/guides/audience-response-systems")}) is an editable draft about live polls, feedback loops, question design, privacy, accessibility, result interpretation, and implementation checklists. It is informational and should be reviewed before final publication.
 `;

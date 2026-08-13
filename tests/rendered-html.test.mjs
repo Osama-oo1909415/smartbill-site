@@ -26,14 +26,20 @@ function jsonLdTypes(html) {
 }
 
 test("public pages are reachable directly without locale redirect chains", async () => {
-  for (const path of ["/", "/ar", "/en", "/about", "/en/about", "/faq", "/privacy-policy", "/terms", "/contact", "/unsubscribe", "/en/guides/audience-response-systems"]) {
+  for (const path of ["/", "/ar", "/en", "/about", "/en/about", "/faq", "/privacy-policy", "/terms", "/contact", "/unsubscribe"]) {
     const response = await render(path, path === "/about" ? "NEXT_LOCALE=en" : undefined);
     assert.equal(response.status, 200, path);
   }
 });
 
+test("the removed off-topic guide is unavailable in both locales", async () => {
+  for (const path of ["/ar/guides/audience-response-systems", "/en/guides/audience-response-systems"]) {
+    assert.equal((await render(path)).status, 404, path);
+  }
+});
+
 test("raw SSR metadata is unique and route-specific", async () => {
-  const pages = ["/en", "/en/faq", "/en/guides/audience-response-systems"];
+  const pages = ["/en", "/en/faq"];
   const snapshots = [];
   for (const path of pages) {
     const response = await render(path);
@@ -57,26 +63,22 @@ test("raw SSR metadata is unique and route-specific", async () => {
   assert.equal(new Set(snapshots.map(([, description]) => description)).size, pages.length);
 });
 
-test("home, FAQ, and guide JSON-LD expose the correct Schema.org types", async () => {
+test("home and FAQ JSON-LD expose the correct Schema.org types", async () => {
   const home = jsonLdTypes(await (await render("/en")).text());
   const faq = jsonLdTypes(await (await render("/en/faq")).text());
-  const guide = jsonLdTypes(await (await render("/en/guides/audience-response-systems")).text());
   assert.ok(home.includes("Organization"));
   assert.ok(home.includes("WebSite"));
   assert.ok(home.includes("Service"));
   assert.ok(faq.includes("FAQPage"));
-  assert.ok(guide.includes("Article"));
 });
 
 test("SEO metadata, AI endpoints, sitemap, robots, and OG image are present", async () => {
   const layout = await readFile(new URL("../app/layout.tsx", import.meta.url), "utf8");
   const locale = await readFile(new URL("../app/locale.ts", import.meta.url), "utf8");
-  const guideSource = await readFile(new URL("../app/guides/audience-response-systems-content.ts", import.meta.url), "utf8");
   assert.match(layout, /GOOGLE_SITE_VERIFICATION/);
   assert.match(layout, /metadataBase: new URL\(SITE_URL\)/);
   assert.match(locale, /NEXT_PUBLIC_SITE_URL/);
   assert.doesNotMatch(locale, /https:\/\/smartbill\.dev/);
-  assert.ok((guideSource.match(/\b[A-Za-z]+(?:'[A-Za-z]+)?\b/g) ?? []).length > 800);
 
   const endpointAssertions = [
     ["/sitemap.xml", "application/xml"],
@@ -94,11 +96,11 @@ test("SEO metadata, AI endpoints, sitemap, robots, and OG image are present", as
   assert.equal((llms.match(/^# /gm) ?? []).length, 1);
   assert.match(llms, /^> /m);
   assert.match(llms, /^## /m);
-  assert.match(llms, /audience-response-systems/);
+  assert.doesNotMatch(llms, /audience-response-systems/);
 
   const full = await (await render("/llms-full.txt")).text();
   assert.match(full, /Privacy model/);
-  assert.match(full, /audience-response-systems/);
+  assert.doesNotMatch(full, /audience-response-systems/);
 
   const robots = await (await render("/robots.txt")).text();
   for (const agent of ["Googlebot", "Bingbot", "OAI-SearchBot", "ChatGPT-User", "Claude-SearchBot", "Claude-User", "PerplexityBot", "Perplexity-User", "GPTBot", "ClaudeBot", "Google-Extended"]) assert.match(robots, new RegExp(agent));
@@ -106,7 +108,7 @@ test("SEO metadata, AI endpoints, sitemap, robots, and OG image are present", as
   assert.match(robots, /Disallow: \/admin\//);
 
   const sitemap = await (await render("/sitemap.xml")).text();
-  assert.match(sitemap, /https:\/\/smartbill\.dev\/en\/guides\/audience-response-systems/);
+  assert.doesNotMatch(sitemap, /audience-response-systems/);
   assert.match(sitemap, /<lastmod>/);
   assert.match(sitemap, /<changefreq>/);
   assert.match(sitemap, /<priority>/);

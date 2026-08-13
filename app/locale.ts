@@ -29,10 +29,6 @@ const pageMeta = {
     ar: { title: "تواصل معنا | SmartBill", description: "تواصل مع SmartBill بشأن الوصول المبكر، الخصوصية، البيانات، أو الدعم التقني." },
     en: { title: "Contact | SmartBill", description: "Contact SmartBill about early access, privacy, data, or technical support." },
   },
-  "/guides/audience-response-systems": {
-    ar: { title: "Audience response systems | SmartBill", description: "A practical guide to audience response systems, participation, privacy, and better feedback loops." },
-    en: { title: "Audience response systems", description: "A practical guide to audience response systems, participation, privacy, and better feedback loops." },
-  },
   "/unsubscribe": {
     ar: { title: "إلغاء الاشتراك | SmartBill", description: "إدارة رسائل SmartBill وإيقاف تحديثات الوصول المبكر." },
     en: { title: "Unsubscribe | SmartBill", description: "Manage SmartBill messages and stop early-access updates." },
