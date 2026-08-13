@@ -123,6 +123,13 @@ img { display: block; max-width: 100%; }
   .proof-review .review-window>span:nth-of-type(2){animation-delay:120ms}
 }
 @keyframes proof-card-reveal{from{opacity:.08;transform:translateY(28px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+
+/* Step icons: CSS-drawn so the three actions share one visual language without font glyph drift. */
+.how-icon{transition:transform .25s ease,box-shadow .25s ease}.how-card:hover .how-icon{transform:translateY(-3px);box-shadow:0 12px 24px color-mix(in srgb,var(--primary) 18%,transparent)}
+.how-glyph{position:relative;display:block;width:40px;height:40px}.how-glyph i{display:block}
+.how-icon-capture .how-glyph::before{content:"";position:absolute;inset:5px 3px;border:2px solid currentColor;border-radius:5px}.how-icon-capture .how-glyph::after{content:"";position:absolute;left:1px;right:1px;top:19px;height:2px;border-radius:2px;background:currentColor;box-shadow:0 0 0 3px color-mix(in srgb,var(--primary) 8%,transparent)}
+.how-icon-review .how-glyph::before{content:"";position:absolute;left:7px;top:4px;width:25px;height:31px;border:2px solid currentColor;border-radius:4px}.how-icon-review .how-glyph::after{content:"";position:absolute;right:1px;bottom:3px;width:16px;height:7px;border-left:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(-45deg);border-radius:1px}.how-icon-review .how-glyph i{position:absolute;left:12px;width:12px;height:2px;border-radius:2px;background:currentColor}.how-icon-review .how-glyph i:nth-child(1){top:13px}.how-icon-review .how-glyph i:nth-child(2){top:20px}
+.how-icon-understand .how-glyph{width:38px;height:36px;margin:2px 0 0 2px;border-left:2px solid currentColor;border-bottom:2px solid currentColor}.how-icon-understand .how-glyph i{position:absolute;bottom:1px;width:6px;border-radius:4px 4px 0 0;background:currentColor}.how-icon-understand .how-glyph i:nth-child(1){left:7px;height:13px}.how-icon-understand .how-glyph i:nth-child(2){left:16px;height:22px}.how-icon-understand .how-glyph i:nth-child(3){left:25px;height:30px}
 @keyframes review-field-in{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:translateY(0)}}
 .proof-scan-frame{animation:crop-frame-pulse 2.8s ease-in-out infinite;will-change:box-shadow}
 .proof-scan-frame::after{content:"";position:absolute;z-index:2;left:-12px;right:-12px;top:7px;height:2px;border-radius:999px;background:linear-gradient(90deg,transparent,var(--mint),#fff,var(--mint),transparent);box-shadow:0 0 12px rgba(126,240,176,.8);animation:receipt-laser 2.8s ease-in-out infinite}
