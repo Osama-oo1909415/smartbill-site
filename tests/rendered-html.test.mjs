@@ -26,7 +26,7 @@ function jsonLdTypes(html) {
 }
 
 test("public pages are reachable directly without locale redirect chains", async () => {
-  for (const path of ["/", "/ar", "/en", "/about", "/en/about", "/faq", "/privacy-policy", "/terms", "/contact", "/unsubscribe"]) {
+  for (const path of ["/", "/ar", "/en", "/about", "/en/about", "/faq", "/privacy-policy", "/terms", "/contact", "/unsubscribe", "/en/search?q=privacy"]) {
     const response = await render(path, path === "/about" ? "NEXT_LOCALE=en" : undefined);
     assert.equal(response.status, 200, path);
   }
@@ -39,7 +39,7 @@ test("the removed off-topic guide is unavailable in both locales", async () => {
 });
 
 test("raw SSR metadata is unique and route-specific", async () => {
-  const pages = ["/en", "/en/faq"];
+  const pages = ["/en", "/en/about", "/en/faq", "/en/privacy-policy", "/en/terms", "/en/contact", "/en/unsubscribe"];
   const snapshots = [];
   for (const path of pages) {
     const response = await render(path);
@@ -52,6 +52,7 @@ test("raw SSR metadata is unique and route-specific", async () => {
     assert.match(html, /<link rel="canonical" href="https:\/\/smartbill\.dev\/en[^" ]*"/i);
     assert.match(html, /property="og:title"/i);
     assert.match(html, /property="og:description"/i);
+    assert.match(html, /property="og:type"/i);
     assert.match(html, /property="og:url"/i);
     assert.match(html, /property="og:image"/i);
     assert.match(html, /name="twitter:card" content="summary_large_image"/i);
@@ -61,15 +62,20 @@ test("raw SSR metadata is unique and route-specific", async () => {
   }
   assert.equal(new Set(snapshots.map(([title]) => title)).size, pages.length);
   assert.equal(new Set(snapshots.map(([, description]) => description)).size, pages.length);
+  const searchHtml = await (await render("/en/search?q=privacy")).text();
+  assert.match(searchHtml, /name="robots" content="noindex, follow"/i);
 });
 
-test("home and FAQ JSON-LD expose the correct Schema.org types", async () => {
+test("core JSON-LD exposes the correct Schema.org types and SearchAction", async () => {
   const home = jsonLdTypes(await (await render("/en")).text());
   const faq = jsonLdTypes(await (await render("/en/faq")).text());
   assert.ok(home.includes("Organization"));
   assert.ok(home.includes("WebSite"));
   assert.ok(home.includes("Service"));
   assert.ok(faq.includes("FAQPage"));
+  const homeHtml = await (await render("/en")).text();
+  assert.match(homeHtml, /"@type":"SearchAction"/);
+  assert.match(homeHtml, /\/en\/search\?q=\{search_term_string\}/);
 });
 
 test("SEO metadata, AI endpoints, sitemap, robots, and OG image are present", async () => {
@@ -119,8 +125,9 @@ test("SEO metadata, AI endpoints, sitemap, robots, and OG image are present", as
 });
 
 test("existing waitlist, privacy, analytics, and motion contracts remain intact", async () => {
-  const [schema, waitlistRoute, unsubscribeRoute, email, privacy, consent, analytics, preferences, styles] = await Promise.all([
+  const [schema, layout, waitlistRoute, unsubscribeRoute, email, privacy, consent, analytics, preferences, styles] = await Promise.all([
     readFile(new URL("../db/schema.ts", import.meta.url), "utf8"),
+    readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/api/waitlist/route.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/api/unsubscribe/route.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/lib/waitlist-email.ts", import.meta.url), "utf8"),
@@ -130,6 +137,8 @@ test("existing waitlist, privacy, analytics, and motion contracts remain intact"
     readFile(new URL("../app/site-preferences.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
   ]);
+  assert.match(layout, /<JsonLd data=\{organizationSchema\(SITE_URL\)\}/);
+  assert.match(layout, /<JsonLd data=\{websiteSchema\(SITE_URL\)\}/);
   assert.match(schema, /unsubscribeToken/);
   assert.match(schema, /unsubscribedAt/);
   assert.match(waitlistRoute, /crypto\.randomUUID/);

@@ -18,4 +18,9 @@ export const websiteSchema = (siteUrl: string) => ({
   name: "SmartBill",
   url: siteUrl,
   publisher: { "@type": "Organization", name: "SmartBill", url: siteUrl },
+  potentialAction: {
+    "@type": "SearchAction",
+    target: `${siteUrl}/en/search?q={search_term_string}`,
+    "query-input": "required name=search_term_string",
+  },
 });

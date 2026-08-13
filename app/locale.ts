@@ -29,6 +29,10 @@ const pageMeta = {
     ar: { title: "تواصل معنا | SmartBill", description: "تواصل مع SmartBill بشأن الوصول المبكر، الخصوصية، البيانات، أو الدعم التقني." },
     en: { title: "Contact | SmartBill", description: "Contact SmartBill about early access, privacy, data, or technical support." },
   },
+  "/search": {
+    ar: { title: "البحث | SmartBill", description: "ابحث في صفحات SmartBill عن الخصوصية، المسح المحلي، المراجعة، والمزامنة." },
+    en: { title: "Search | SmartBill", description: "Search SmartBill pages about privacy, local scanning, review, and sync." },
+  },
   "/unsubscribe": {
     ar: { title: "إلغاء الاشتراك | SmartBill", description: "إدارة رسائل SmartBill وإيقاف تحديثات الوصول المبكر." },
     en: { title: "Unsubscribe | SmartBill", description: "Manage SmartBill messages and stop early-access updates." },
