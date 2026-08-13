@@ -15,14 +15,15 @@ export function AnalyticsConsent() {
   const { lang } = useSitePreferences();
   const [consent, setConsent] = useState<"unknown" | "granted" | "denied">("unknown");
   const [open, setOpen] = useState(false);
+  const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
     const saved = window.localStorage.getItem(ANALYTICS_CONSENT_KEY);
     const listener = () => setOpen(true);
     window.addEventListener(OPEN_ANALYTICS_PREFERENCES_EVENT, listener);
-    const timer = saved === "granted" || saved === "denied" ? window.setTimeout(() => setConsent(saved), 0) : undefined;
+    if (saved === "granted" || saved === "denied") setConsent(saved);
+    setHydrated(true);
     return () => {
-      if (timer) window.clearTimeout(timer);
       window.removeEventListener(OPEN_ANALYTICS_PREFERENCES_EVENT, listener);
     };
   }, []);
@@ -34,15 +35,15 @@ export function AnalyticsConsent() {
   }
 
   const copy = lang === "ar"
-    ? { title: "اختيارات الخصوصية", body: "نستخدم تحليلات مجهولة لفهم استخدام الموقع وتحسينه. لن نرسل سجلاتك المالية أو صور فواتيرك.", allow: "السماح بالتحليلات", deny: "المتابعة دون تحليلات" }
-    : { title: "Privacy choices", body: "We use anonymous analytics to understand and improve the site. We never send your financial records or receipt images.", allow: "Allow analytics", deny: "Continue without analytics" };
+    ? { title: "اختيارات الخصوصية", body: "التحليلات اختيارية. لا نفعّل Google Analytics إلا بعد موافقتك. عند السماح، نقيس زيارات الصفحات وتفاعل الأزرار وبدء التسجيل ونجاحه، مع اللغة وبعض بيانات المتصفح، وقد تستخدم Google ملفات تعريف ارتباط للقياس وفق سياستها؛ لا نرسل بريدك الإلكتروني أو سجلاتك المالية أو صور فواتيرك أو محتوى المساعد إلى التحليلات. نحفظ البيانات التي ترسلها فقط عند إرسال نموذج قائمة الانتظار أو التواصل؛ ويُستخدم بريد القائمة لتحديثات الإطلاق.", allow: "السماح بتحليلات الموقع", deny: "المتابعة دون تحليلات" }
+    : { title: "Privacy choices", body: "Analytics are optional. Google Analytics loads only after you allow it. If enabled, we measure page visits, button interactions, and waitlist form start/success, along with language and basic browser data. Google may use measurement cookies under its own policy. We do not send your email address, financial records, receipt images, or assistant content to Analytics. We store the information you submit through the waitlist or contact form; waitlist email is used for launch updates.", allow: "Allow website analytics", deny: "Continue without analytics" };
 
   return <>
     {consent === "granted" ? <>
       <Script async src={`https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ANALYTICS_ID}`} strategy="afterInteractive" />
       <Script id="google-analytics" strategy="afterInteractive">{`window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} window.gtag = gtag; gtag('js', new Date()); gtag('config', '${GOOGLE_ANALYTICS_ID}');`}</Script>
     </> : null}
-    {consent === "unknown" || open ? <aside className="analytics-consent" aria-label={copy.title}>
+    {hydrated && (consent === "unknown" || open) ? <aside className="analytics-consent" aria-label={copy.title}>
       <div><strong>{copy.title}</strong><p>{copy.body}</p></div>
       <div className="analytics-consent-actions"><button type="button" className="button secondary-button" onClick={() => choose("denied")}>{copy.deny}</button><button type="button" className="button primary-button" onClick={() => choose("granted")}>{copy.allow}</button></div>
     </aside> : null}

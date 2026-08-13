@@ -148,6 +148,12 @@ test("existing waitlist, privacy, analytics, and motion contracts remain intact"
   assert.match(privacy, /only after you grant analytics consent/);
   assert.match(consent, /G-BQFVFK5N91/);
   assert.match(analytics, /ANALYTICS_CONSENT_KEY/);
+  assert.match(consent, /hydrated/);
+  assert.match(consent, /localStorage\.setItem\(ANALYTICS_CONSENT_KEY/);
+  assert.match(consent, /Google Analytics loads only after you allow it/);
+  assert.match(consent, /waitlist form start\/success/);
+  assert.match(consent, /measurement cookies/);
+  assert.match(consent, /We do not send your email address/);
   assert.match(preferences, /prefers-color-scheme/);
   assert.match(styles, /animation-timeline: view\(\)/);
   assert.match(styles, /offset-path:ellipse/);
