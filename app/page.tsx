@@ -133,7 +133,7 @@ function FeatureVisual({ type, lang }: { type: string; lang: "ar" | "en" }) {
 function ProofVisual({ kind, lang }: { kind: "receipt" | "review" | "insight"; lang: "ar" | "en" }) {
   if (kind === "receipt") return <div className="proof-visual proof-receipt" aria-hidden="true"><div className="proof-receipt-paper"><b>SMARTBILL</b><span /><span /><span /><i>268.80</i></div><div className="proof-scan-frame"><i /><i /><i /><i /></div><small>{lang === "ar" ? "رسم توضيحي" : "Flow illustration"}</small></div>;
   if (kind === "review") return <div className="proof-visual proof-review" aria-hidden="true"><div className="review-window"><b>{lang === "ar" ? "مراجعة المسودة" : "Review draft"}</b><span><i />{lang === "ar" ? "المتجر" : "Merchant"}<strong>{lang === "ar" ? "مكتبة جرير" : "Jarir Bookstore"}</strong></span><span><i />{lang === "ar" ? "المبلغ" : "Amount"}<strong>268.80</strong></span><em>{lang === "ar" ? "قابل للتعديل" : "Editable"}</em></div><small>{lang === "ar" ? "رسم توضيحي" : "Flow illustration"}</small></div>;
-  return <div className="proof-visual proof-insight" aria-hidden="true"><img src={lang === "ar" ? "/smartbill-app-screen-nav-v2.png" : "/smartbill-app-screen-nav-v2-en.png"} alt="" /><div className="insight-label">{lang === "ar" ? "تقارير مرتبطة بسجلاتك" : "Reports grounded in your records"}</div></div>;
+  return <div className="proof-visual proof-insight" aria-hidden="true"><img src={lang === "ar" ? "/smartbill-app-screen-dark-ar.png" : "/smartbill-app-screen-nav-v2-en.png"} alt="" /><div className="insight-label">{lang === "ar" ? "تقارير مرتبطة بسجلاتك" : "Reports grounded in your records"}</div></div>;
 }
 
 export default function Home() {
@@ -156,7 +156,7 @@ export default function Home() {
           </div>
 
           <div className="hero-product" aria-label={lang === "ar" ? "معاينة تطبيق SmartBill" : "SmartBill app preview"}>
-            <img className="real-app-screen" src={lang === "ar" ? "/smartbill-app-screen-nav-v2.png" : "/smartbill-app-screen-nav-v2-en.png"} alt={lang === "ar" ? "واجهة SmartBill مع زر مسح OCR" : "SmartBill interface with OCR scan action"} width="591" height="1024" />
+            <img className="real-app-screen" src={lang === "ar" ? "/smartbill-app-screen-dark-ar.png" : "/smartbill-app-screen-nav-v2-en.png"} alt={lang === "ar" ? "واجهة SmartBill مع زر مسح OCR" : "SmartBill interface with OCR scan action"} width="591" height="1024" />
           </div>
         </div>
         <div className="hero-bottom shell">{t.ribbon.map((item, index) => <span key={item}>{item}{index < 3 ? <i /> : null}</span>)}</div>
