@@ -1,6 +1,6 @@
 import { getRuntimeEnv } from "./runtime-env";
 
-type WaitlistEmailInput = { email: string; language: "ar" | "en"; entryId: number };
+type WaitlistEmailInput = { email: string; language: "ar" | "en"; entryId: number; unsubscribeToken: string };
 
 const SITE_URL = "https://smartbill.dev";
 const LOGO_URL = `${SITE_URL}/app-icon.png`;
@@ -29,11 +29,12 @@ async function sendEmail(payload: Record<string, unknown>, idempotencyKey: strin
   }
 }
 
-export async function sendWaitlistConfirmation({ email, language, entryId }: WaitlistEmailInput): Promise<boolean> {
+export async function sendWaitlistConfirmation({ email, language, entryId, unsubscribeToken }: WaitlistEmailInput): Promise<boolean> {
   const from = getRuntimeEnv("WAITLIST_FROM_EMAIL") ?? "SmartBill <noreply@update.smartbill.dev>";
   const replyTo = getRuntimeEnv("WAITLIST_REPLY_TO");
   const arabic = language === "ar";
   const appScreenUrl = APP_SCREEN_URLS[language];
+  const unsubscribeUrl = `${SITE_URL}/${language}/unsubscribe?token=${encodeURIComponent(unsubscribeToken)}`;
   const copy = arabic
     ? {
         subject: "تم استلام طلبك للانضمام إلى SmartBill",
@@ -41,13 +42,14 @@ export async function sendWaitlistConfirmation({ email, language, entryId }: Wai
         eyebrow: "الوصول المبكر",
         title: "تم استلام طلبك",
         greeting: "شكراً لاهتمامك بـ SmartBill.",
-        body: "أضفنا بريدك إلى قائمة الوصول المبكر. سنراسلك عندما تصبح التجربة جاهزة، دون رسائل غير ضرورية.",
+        body: "أضفنا بريدك إلى قائمة الوصول المبكر. سنرسل لك تحديثات الإطلاق والحالة فقط، دون رسائل غير ضرورية.",
         imageAlt: "واجهة SmartBill التي تحول الفواتير إلى صورة مالية واضحة",
         featureTitle: "من الفاتورة إلى وضوح أكبر",
         featureBody: "صوّر الفاتورة، راجع البيانات، ثم افهم إنفاقك بهدوء وخصوصية.",
         button: "اكتشف SmartBill",
         footer: "تتلقى هذه الرسالة لأنك طلبت الانضمام إلى قائمة SmartBill.",
         privacy: "خصوصيتك أولاً. نستخدم بريدك لإشعارات الإطلاق فقط.",
+        unsubscribe: "إلغاء الاشتراك من تحديثات SmartBill",
       }
     : {
         subject: "We received your SmartBill waitlist request",
@@ -55,18 +57,19 @@ export async function sendWaitlistConfirmation({ email, language, entryId }: Wai
         eyebrow: "EARLY ACCESS",
         title: "You’re on the list",
         greeting: "Thanks for your interest in SmartBill.",
-        body: "We’ve added your email to early access. We’ll reach out when it’s ready to try—no unnecessary messages.",
+        body: "We’ve added your email to early access. We’ll send launch and status updates only—no unnecessary messages.",
         imageAlt: "SmartBill interface turning receipts into a clear financial picture",
         featureTitle: "From receipt to clarity",
         featureBody: "Capture a receipt, review the details, then understand your spending with calm, private tools.",
         button: "Explore SmartBill",
         footer: "You’re receiving this because you asked to join the SmartBill waitlist.",
         privacy: "Privacy first. We use your email for launch updates only.",
+        unsubscribe: "Unsubscribe from SmartBill updates",
       };
   const direction = arabic ? "rtl" : "ltr";
   const align = arabic ? "right" : "left";
   const font = arabic ? "Cairo, Arial, sans-serif" : "Arial, Helvetica, sans-serif";
-  const text = `${copy.title}\n\n${copy.greeting}\n${copy.body}\n\n${copy.featureTitle}: ${copy.featureBody}\n\n${copy.button}: ${SITE_URL}\n\n${copy.privacy}`;
+  const text = `${copy.title}\n\n${copy.greeting}\n${copy.body}\n\n${copy.featureTitle}: ${copy.featureBody}\n\n${copy.button}: ${SITE_URL}\n\n${copy.privacy}\n${copy.unsubscribe}: ${unsubscribeUrl}`;
   const html = `<!doctype html>
 <html lang="${language}" dir="${direction}">
 <head>
@@ -119,6 +122,7 @@ export async function sendWaitlistConfirmation({ email, language, entryId }: Wai
             <tr><td class="email-padding" style="padding:24px 38px 34px;text-align:${align};font-family:${font};"><a href="${SITE_URL}" style="display:inline-block;background:#2563d9;border:1px solid #2563d9;border-radius:12px;color:#ffffff;font-size:16px;font-weight:700;line-height:20px;padding:14px 22px;text-decoration:none;">${copy.button}</a></td></tr>
           </table>
         </td></tr>
+        <tr><td class="email-footer" style="padding:0 22px 18px;color:#72809a;font-family:${font};font-size:12px;line-height:1.7;text-align:${align};"><a href="${unsubscribeUrl}" style="color:#2563d9;text-decoration:underline;">${copy.unsubscribe}</a></td></tr>
         <tr><td class="email-footer" style="padding:20px 22px 0;color:#72809a;font-family:${font};font-size:12px;line-height:1.7;text-align:${align};">${copy.footer}<br />${copy.privacy}</td></tr>
       </table>
     </td></tr>

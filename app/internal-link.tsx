@@ -1,4 +1,8 @@
+"use client";
+
 import type { AnchorHTMLAttributes } from "react";
+import { localizedPath } from "./locale";
+import { useSitePreferences } from "./site-preferences";
 
 type InternalLinkProps = AnchorHTMLAttributes<HTMLAnchorElement> & {
   href: string;
@@ -10,5 +14,6 @@ type InternalLinkProps = AnchorHTMLAttributes<HTMLAnchorElement> & {
  * normal browser, where framework-level client navigation may be unavailable.
  */
 export default function InternalLink({ href, children, ...props }: InternalLinkProps) {
-  return <a href={href} {...props}>{children}</a>;
+  const { lang } = useSitePreferences();
+  return <a href={localizedPath(href, lang)} {...props}>{children}</a>;
 }

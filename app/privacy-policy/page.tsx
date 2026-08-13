@@ -36,7 +36,7 @@ const policy = {
       "الحذف: الحساب ← حذف الحساب يزيل سجلاتك السحابية ونسخة الجهاز. أما إزالة البيانات من هذا الجهاز فهي إجراء منفصل يُبقي الحساب قائماً.",
     ]],
     ["تحليلات الموقع", [
-      "يستخدم موقع SmartBill Google Analytics لقياس الزيارات وفهم استخدام الصفحات وتحسين الموقع. قد تعالج Google بيانات التصفح والجهاز وفق سياساتها الخاصة.",
+      "يستخدم موقع SmartBill Google Analytics فقط بعد موافقتك لقياس الزيارات وفهم استخدام الصفحات وتحسين الموقع. قد تعالج Google بيانات التصفح والجهاز وفق سياساتها الخاصة.",
       "لا نرسل إلى Google Analytics سجلاتك المالية أو صور الإيصالات أو محتوى المساعد.",
     ]],
     ["الاحتفاظ والمشاركة", [
@@ -76,7 +76,7 @@ const policy = {
       "Delete: Account → Delete account removes your cloud records and the device copy. Removing data from this device only is a separate action that leaves the account intact.",
     ]],
     ["Website analytics", [
-      "The SmartBill website uses Google Analytics to measure visits, understand page usage, and improve the site. Google may process browsing and device data under its own policies.",
+      "The SmartBill website loads Google Analytics only after you grant analytics consent to measure visits, understand page usage, and improve the site. Google may process browsing and device data under its own policies.",
       "We do not send financial records, receipt images, or assistant content to Google Analytics.",
     ]],
     ["Retention and sharing", [

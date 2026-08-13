@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "./internal-link";
+import { openAnalyticsPreferences } from "./analytics-consent";
+import { switchLocalePath } from "./locale";
 import { useSitePreferences } from "./site-preferences";
 
 const chromeCopy = {
@@ -22,6 +24,7 @@ const chromeCopy = {
     product: "المنتج",
     company: "المعلومات",
     legal: "الثقة والخصوصية",
+    privacyChoices: "اختيارات الخصوصية",
     links: {
       how: "كيف يعمل",
       features: "المزايا",
@@ -52,6 +55,7 @@ const chromeCopy = {
     product: "Product",
     company: "Information",
     legal: "Trust & privacy",
+    privacyChoices: "Privacy choices",
     links: {
       how: "How it works",
       features: "Features",
@@ -69,6 +73,12 @@ const chromeCopy = {
 export function SiteHeader() {
   const { lang, theme, setLang, toggleTheme } = useSitePreferences();
   const t = chromeCopy[lang];
+  function switchLanguage() {
+    const next = lang === "ar" ? "en" : "ar";
+    setLang(next);
+    const nextPath = switchLocalePath(window.location.pathname, next);
+    window.location.assign(`${nextPath}${window.location.search}${window.location.hash}`);
+  }
 
   return (
     <header className="site-header">
@@ -83,7 +93,7 @@ export function SiteHeader() {
         </div>
 
         <div className="nav-actions">
-          <button className="preference-button language-button" type="button" onClick={() => setLang(lang === "ar" ? "en" : "ar")} aria-label={t.language}>
+          <button className="preference-button language-button" type="button" onClick={switchLanguage} aria-label={t.language}>
             {lang === "ar" ? "EN" : "ع"}
           </button>
           <button className="preference-button" type="button" onClick={toggleTheme} aria-label={theme === "dark" ? t.themeLight : t.themeDark} aria-pressed={theme === "dark"}>
@@ -120,7 +130,7 @@ export function SiteFooter() {
         <div className="footer-column"><b>{t.company}</b><Link href="/about">{t.links.about}</Link><Link href="/contact">{t.links.contact}</Link><Link href="/faq">{t.links.faq}</Link></div>
         <div className="footer-column"><b>{t.legal}</b><Link href="/privacy-policy">{t.links.privacy}</Link><Link href="/terms">{t.links.terms}</Link></div>
       </div>
-      <div className="footer-bottom shell"><p>© 2026 SmartBill</p><p>{t.status}</p></div>
+      <div className="footer-bottom shell"><p>© 2026 SmartBill</p><div className="footer-bottom-actions"><p>{t.status}</p><button type="button" className="privacy-choices-button" onClick={openAnalyticsPreferences}>{t.privacyChoices}</button></div></div>
     </footer>
   );
 }

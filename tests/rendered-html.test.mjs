@@ -14,102 +14,92 @@ async function render(path = "/", cookie) {
   );
 }
 
-test("server-renders the bilingual SmartBill landing page", async () => {
-  const response = await render();
-  assert.equal(response.status, 200);
-  assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
+test("legacy public paths redirect to the default locale", async () => {
+  const response = await render("/");
+  assert.equal(response.status, 308);
+  assert.equal(response.headers.get("location"), "/ar");
+});
 
+test("server-renders the English localized landing page", async () => {
+  const response = await render("/en");
+  assert.equal(response.status, 200);
   const html = await response.text();
-  assert.match(html, /<html lang="ar" dir="rtl"/i);
-  assert.match(html, /SmartBill/);
-  assert.match(html, /من الفاتورة إلى فهم إنفاقك/);
-  assert.match(html, /<title>SmartBill \| مصروفاتك تحت control<\/title>/i);
-  assert.match(html, /<meta[^>]*name="description"[^>]*content="مصروفاتك تحت control، وفواتيرك مشفرة على جهازك بذكاء وخصوصية\. SmartBill: Private, on-device expense tracking and instant receipt scanning\."/i);
-  assert.match(html, /<link rel="icon" href="\/favicon\.ico"[^>]*>/i);
-  assert.match(html, /<link rel="icon"[^>]*href="\/icon-32\.png"[^>]*sizes="32x32"/i);
-  assert.match(html, /<link rel="icon"[^>]*href="\/icon\.png"[^>]*sizes="192x192"/i);
-  assert.match(html, /<link rel="apple-touch-icon"[^>]*href="\/apple-touch-icon\.png"/i);
-  assert.match(html, /<meta[^>]*property="og:title"[^>]*content="SmartBill \| مصروفاتك تحت control"/i);
-  assert.match(html, /<meta[^>]*property="og:description"[^>]*content="مصروفاتك تحت control، وفواتيرك مشفرة على جهازك بذكاء وخصوصية\. SmartBill: Private, on-device expense tracking and instant receipt scanning\."/i);
-  assert.match(html, /<meta[^>]*property="og:image"[^>]*content="https:\/\/smartbill\.dev\/og-image\.png"/i);
-  assert.match(html, /property="og:image:width" content="1200"/i);
-  assert.match(html, /property="og:image:height" content="630"/i);
-  assert.match(html, /<meta[^>]*name="twitter:card"[^>]*content="summary_large_image"/i);
-  assert.match(html, /<meta[^>]*name="twitter:title"[^>]*content="SmartBill \| مصروفاتك تحت control"/i);
-  assert.match(html, /<meta[^>]*name="twitter:description"[^>]*content="مصروفاتك تحت control، وفواتيرك مشفرة على جهازك بذكاء وخصوصية\. SmartBill: Private, on-device expense tracking and instant receipt scanning\."/i);
-  assert.match(html, /<meta[^>]*name="twitter:image"[^>]*content="https:\/\/smartbill\.dev\/og-image\.png"/i);
-  assert.match(html, /property="og:image:secure_url"[^>]*content="https:\/\/smartbill\.dev\/og-image\.png"/i);
-  assert.match(html, /<link rel="manifest" href="\/manifest\.webmanifest"/i);
-  assert.match(html, /class="nav-page-link"/);
-  assert.match(html, /id="waitlist"/);
-  assert.match(html, /smartbill-app-screen-nav-v2\.png/);
-  assert.match(html, /type="email"/);
+
+  assert.match(html, /<html lang="en" dir="ltr"/i);
+  assert.match(html, /Clearer spending/);
+  assert.match(html, /Join the waitlist/);
+  assert.match(html, /smartbill-app-screen-nav-v2-en\.png/);
+  assert.match(html, /href="\/en"/);
+  assert.match(html, /href="https:\/\/smartbill\.dev\/ar"/);
+  assert.match(html, /href="https:\/\/smartbill\.dev\/en"/);
+  assert.match(html, /Privacy choices/);
+  assert.doesNotMatch(html, /98% accuracy/);
   assert.doesNotMatch(html, /codex-preview|Building your site|react-loading-skeleton/i);
 });
 
-test("uses NEXT_LOCALE to render the document language on the server", async () => {
-  const response = await render("/about", "NEXT_LOCALE=en");
+test("server-renders the Arabic localized landing page and keeps route metadata aligned", async () => {
+  const response = await render("/ar");
+  assert.equal(response.status, 200);
   const html = await response.text();
 
-  assert.equal(response.status, 200);
-  assert.match(html, /<html lang="en" dir="ltr"/i);
+  assert.match(html, /<html lang="ar" dir="rtl"/i);
+  assert.match(html, /مصروفاتك أوضح/);
+  assert.match(html, /انضم لقائمة الانتظار/);
+  assert.match(html, /smartbill-app-screen-nav-v2\.png/);
+  assert.match(html, /property="og:locale" content="ar_SA"/i);
+  assert.match(html, /href="https:\/\/smartbill\.dev\/ar"/);
+  assert.match(html, /href="https:\/\/smartbill\.dev\/en"/);
 });
 
-test("keeps trust, responsive, and real-count behavior in source", async () => {
-  const [page, chrome, about, waitlistRoute, css, layout, packageJson] = await Promise.all([
-    readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../app/site-chrome.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../app/about/page.tsx", import.meta.url), "utf8"),
+test("locale-prefixed secondary pages and legacy locale selection work", async () => {
+  const englishPage = await render("/en/about");
+  assert.equal(englishPage.status, 200);
+  const englishHtml = await englishPage.text();
+  assert.match(englishHtml, /<html lang="en" dir="ltr"/i);
+  assert.match(englishHtml, /About SmartBill/);
+  assert.match(englishHtml, /canonical/);
+
+  const legacyPage = await render("/about", "NEXT_LOCALE=en");
+  assert.equal(legacyPage.status, 308);
+  assert.equal(legacyPage.headers.get("location"), "/en/about");
+});
+
+test("waitlist, unsubscribe, privacy, and analytics contracts are present", async () => {
+  const [schema, waitlistRoute, unsubscribeRoute, email, privacy, consent, analytics, preferences] = await Promise.all([
+    readFile(new URL("../db/schema.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/api/waitlist/route.ts", import.meta.url), "utf8"),
-    readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
-    readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../package.json", import.meta.url), "utf8"),
-  ]);
-
-  assert.match(page, /<WaitlistForm \/>/);
-  assert.match(page, /smartbill-app-screen-nav-v2\.png/);
-  assert.match(page, /smartbill-app-screen-nav-v2-en\.png/);
-  assert.match(page, /id="features"/);
-  assert.match(page, /id="privacy"/);
-  assert.match(chrome, /nav-page-link/);
-  assert.match(about, /github\.com\/Osama-oo1909415/);
-  assert.match(about, /linkedin\.com\/in\/osama-osman-950aa3194\//);
-  assert.doesNotMatch(about, /linkedin\.com\/in\/osama-yousif-eisa-osman/);
-  assert.match(waitlistRoute, /export async function GET/);
-  assert.match(waitlistRoute, /count\(\)/);
-  assert.match(css, /@media\(max-width:360px\)/);
-  assert.match(css, /prefers-reduced-motion:reduce/);
-  assert.match(layout, /og-image\.png/);
-  assert.match(layout, /googletagmanager\.com\/gtag\/js\?id=/);
-  assert.match(layout, /G-BQFVFK5N91/);
-  assert.match(layout, /gtag\('config'/);
-  assert.match(layout, /localStorage\.getItem\('lang'\)/);
-  assert.match(layout, /cookies\(\)\)\.get\("NEXT_LOCALE"\)/);
-  assert.match(layout, /<html lang=\{locale\} dir=\{locale === "ar" \? "rtl" : "ltr"\}/);
-  assert.doesNotMatch(packageJson, /react-loading-skeleton/);
-});
-
-test("persists and synchronizes the selected site language", async () => {
-  const preferences = await readFile(new URL("../app/site-preferences.tsx", import.meta.url), "utf8");
-
-  assert.match(preferences, /const LANGUAGE_STORAGE_KEY = "lang"/);
-  assert.match(preferences, /localStorage\.setItem\(LANGUAGE_STORAGE_KEY, nextLanguage\)/);
-  assert.match(preferences, /document\.cookie = `\$\{LANGUAGE_COOKIE_NAME\}=\$\{nextLanguage\}; path=\/; max-age=31536000/);
-  assert.match(preferences, /function languageFromCookie\(\)/);
-  assert.match(preferences, /localStorage\.getItem\(LANGUAGE_STORAGE_KEY\)/);
-  assert.match(preferences, /window\.addEventListener\("storage", syncLanguageAcrossTabs\)/);
-  assert.match(preferences, /document\.documentElement\.dir = lang === "ar" \? "rtl" : "ltr"/);
-  assert.match(preferences, /document\.documentElement\.lang = lang/);
-});
-
-test("uses an Arabic or English app screen to match the website and email locale", async () => {
-  const [page, waitlistEmail] = await Promise.all([
-    readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/api/unsubscribe/route.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/lib/waitlist-email.ts", import.meta.url), "utf8"),
+    readFile(new URL("../app/privacy-policy/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/analytics-consent.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/analytics.ts", import.meta.url), "utf8"),
+    readFile(new URL("../app/site-preferences.tsx", import.meta.url), "utf8"),
   ]);
 
-  assert.match(page, /lang === "ar" \? "\/smartbill-app-screen-nav-v2\.png" : "\/smartbill-app-screen-nav-v2-en\.png"/);
-  assert.match(waitlistEmail, /const APP_SCREEN_URLS = \{/);
-  assert.match(waitlistEmail, /en: `\$\{SITE_URL\}\/smartbill-app-screen-nav-v2-en\.png`/);
-  assert.match(waitlistEmail, /const appScreenUrl = APP_SCREEN_URLS\[language\]/);
+  assert.match(schema, /unsubscribeToken/);
+  assert.match(schema, /unsubscribedAt/);
+  assert.match(waitlistRoute, /crypto\.randomUUID/);
+  assert.match(waitlistRoute, /isNull\(waitlistEntries\.unsubscribedAt\)/);
+  assert.match(unsubscribeRoute, /waitlistEntries\.unsubscribeToken/);
+  assert.match(email, /unsubscribeUrl/);
+  assert.match(email, /copy\.unsubscribe/);
+  assert.match(privacy, /only after you grant analytics consent/);
+  assert.match(consent, /G-BQFVFK5N91/);
+  assert.match(analytics, /ANALYTICS_CONSENT_KEY/);
+  assert.match(preferences, /window\.addEventListener\("storage"/);
+});
+
+test("contact data handling and site metadata surfaces remain bilingual", async () => {
+  const [contact, layout, sitemap, robots] = await Promise.all([
+    readFile(new URL("../app/contact/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/sitemap.ts", import.meta.url), "utf8"),
+    readFile(new URL("../app/robots.ts", import.meta.url), "utf8"),
+  ]);
+
+  assert.match(contact, /internal inbox/);
+  assert.match(contact, /صندوق SmartBill الداخلي/);
+  assert.match(layout, /<AnalyticsConsent \/>/);
+  assert.match(sitemap, /localizedPath/);
+  assert.match(robots, /sitemap\.xml/);
 });

@@ -1,4 +1,5 @@
 import { desc } from "drizzle-orm";
+import Link from "next/link";
 import { getDb } from "../../../db";
 import { contactMessages } from "../../../db/schema";
 import { requireWaitlistAdmin } from "../../lib/waitlist-admin";
@@ -22,7 +23,7 @@ export default async function ContactAdminPage() {
       <p>Messages from the public contact form are saved here. Select Reply to open your email app with the sender already addressed.</p>
     </section>
     <section className="admin-contact-list shell" aria-label="Contact messages">
-      <div className="admin-contact-heading"><strong>{messages.length} {messages.length === 1 ? "message" : "messages"}</strong><a href="/admin/waitlist">Open waitlist</a></div>
+      <div className="admin-contact-heading"><strong>{messages.length} {messages.length === 1 ? "message" : "messages"}</strong><Link href="/admin/waitlist">Open waitlist</Link></div>
       {messages.length ? messages.map((entry) => <article className={`admin-contact-card ${entry.status === "closed" ? "is-closed" : ""}`} key={entry.id}>
         <div className="admin-contact-card-header">
           <div><h2>{entry.topic}</h2><p className="admin-contact-meta"><strong>{entry.name}</strong><a href={`mailto:${entry.email}`}>{entry.email}</a></p></div>

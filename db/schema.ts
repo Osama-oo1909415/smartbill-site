@@ -6,9 +6,11 @@ export const waitlistEntries = sqliteTable(
     id: integer("id").primaryKey({ autoIncrement: true }),
     email: text("email").notNull(),
     language: text("language", { enum: ["ar", "en"] }).notNull().default("ar"),
+    unsubscribeToken: text("unsubscribe_token"),
+    unsubscribedAt: integer("unsubscribed_at", { mode: "timestamp" }),
     createdAt: integer("created_at", { mode: "timestamp" }).notNull().$defaultFn(() => new Date()),
   },
-  (table) => [uniqueIndex("idx_waitlist_entries_email").on(table.email)],
+  (table) => [uniqueIndex("idx_waitlist_entries_email").on(table.email), uniqueIndex("idx_waitlist_entries_unsubscribe_token").on(table.unsubscribeToken)],
 );
 
 export const contactMessages = sqliteTable("contact_messages", {
