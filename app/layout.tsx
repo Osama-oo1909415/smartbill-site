@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     },
 };
 
-const preferenceScript = `(function(){try{var c=document.cookie.match(/(?:^|; )NEXT_LOCALE=([^;]*)/);var l=c?decodeURIComponent(c[1]):(localStorage.getItem('lang')||localStorage.getItem('smartbill-language')||'ar');if(l!=='ar'&&l!=='en')l='ar';var t=localStorage.getItem('smartbill-theme')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');document.documentElement.lang=l;document.documentElement.dir=l==='ar'?'rtl':'ltr';document.documentElement.dataset.theme=t}catch(e){}})();`;
+const preferenceScript = `(function(){try{var c=document.cookie.match(/(?:^|; )NEXT_LOCALE=([^;]*)/);var l=c?decodeURIComponent(c[1]):(localStorage.getItem('lang')||localStorage.getItem('smartbill-language')||'ar');if(l!=='ar'&&l!=='en')l='ar';var m=localStorage.getItem('smartbill-theme-mode'),s=localStorage.getItem('smartbill-theme'),t=m==='manual'&&(s==='dark'||s==='light')?s:(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');document.documentElement.lang=l;document.documentElement.dir=l==='ar'?'rtl':'ltr';document.documentElement.dataset.theme=t}catch(e){}})();`;
 function localeFromCookie(value: string | undefined): SiteLanguage {
   return value === "en" || value === "ar" ? value : "ar";
 }

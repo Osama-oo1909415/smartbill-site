@@ -4,6 +4,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 
 export type SiteLanguage = "ar" | "en";
 export type SiteTheme = "light" | "dark";
+type SiteThemePreference = SiteTheme | "system";
 
 type Preferences = {
   lang: SiteLanguage;
@@ -41,24 +42,46 @@ function savedLanguage(initialLanguage: SiteLanguage): SiteLanguage {
     ?? initialLanguage;
 }
 
-function savedTheme(): SiteTheme {
+function detectedSystemTheme(): SiteTheme {
   if (typeof window === "undefined") return "light";
+  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+}
 
+function savedThemePreference(): SiteThemePreference {
+  if (typeof window === "undefined") return "system";
+
+  if (localStorage.getItem("smartbill-theme-mode") !== "manual") return "system";
   const value = localStorage.getItem("smartbill-theme");
   if (value === "light" || value === "dark") return value;
-  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  return "system";
 }
 
 export function PreferencesProvider({ children, initialLanguage = "ar" }: { children: React.ReactNode; initialLanguage?: SiteLanguage }) {
   const [lang, setLang] = useState<SiteLanguage>(() => savedLanguage(initialLanguage));
-  const [theme, setTheme] = useState<SiteTheme>(savedTheme);
+  const [themePreference, setThemePreference] = useState<SiteThemePreference>(savedThemePreference);
+  const [systemTheme, setSystemTheme] = useState<SiteTheme>(detectedSystemTheme);
+  const theme = themePreference === "system" ? systemTheme : themePreference;
 
   useEffect(() => {
     document.documentElement.lang = lang;
     document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
     document.documentElement.dataset.theme = theme;
-    localStorage.setItem("smartbill-theme", theme);
+    document.documentElement.style.colorScheme = theme;
   }, [lang, theme]);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const syncSystemTheme = (event: MediaQueryListEvent) => {
+      if (themePreference === "system") setSystemTheme(event.matches ? "dark" : "light");
+    };
+
+    if (mediaQuery.addEventListener) mediaQuery.addEventListener("change", syncSystemTheme);
+    else mediaQuery.addListener(syncSystemTheme);
+    return () => {
+      if (mediaQuery.removeEventListener) mediaQuery.removeEventListener("change", syncSystemTheme);
+      else mediaQuery.removeListener(syncSystemTheme);
+    };
+  }, [themePreference]);
 
   const updateLanguage = useCallback((nextLanguage: SiteLanguage) => {
     // Persist before React renders so SSR, navigation, and new tabs see the selected locale.
@@ -66,6 +89,13 @@ export function PreferencesProvider({ children, initialLanguage = "ar" }: { chil
     document.cookie = `${LANGUAGE_COOKIE_NAME}=${nextLanguage}; path=/; max-age=31536000; samesite=lax`;
     setLang(nextLanguage);
   }, []);
+
+  const toggleTheme = useCallback(() => {
+    const nextTheme = theme === "light" ? "dark" : "light";
+    setThemePreference(nextTheme);
+    localStorage.setItem("smartbill-theme-mode", "manual");
+    localStorage.setItem("smartbill-theme", nextTheme);
+  }, [theme]);
 
   useEffect(() => {
     const syncLanguageAcrossTabs = (event: StorageEvent) => {
@@ -78,8 +108,8 @@ export function PreferencesProvider({ children, initialLanguage = "ar" }: { chil
   }, []);
 
   const value = useMemo(
-    () => ({ lang, theme, setLang: updateLanguage, toggleTheme: () => setTheme((current) => (current === "light" ? "dark" : "light")) }),
-    [lang, theme, updateLanguage],
+    () => ({ lang, theme, setLang: updateLanguage, toggleTheme }),
+    [lang, theme, toggleTheme, updateLanguage],
   );
 
   return <PreferencesContext.Provider value={value}>{children}</PreferencesContext.Provider>;

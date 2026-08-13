@@ -65,7 +65,7 @@ test("locale-prefixed secondary pages and legacy locale selection work", async (
 });
 
 test("waitlist, unsubscribe, privacy, and analytics contracts are present", async () => {
-  const [schema, waitlistRoute, unsubscribeRoute, email, privacy, consent, analytics, preferences] = await Promise.all([
+  const [schema, waitlistRoute, unsubscribeRoute, email, privacy, consent, analytics, preferences, styles] = await Promise.all([
     readFile(new URL("../db/schema.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/api/waitlist/route.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/api/unsubscribe/route.ts", import.meta.url), "utf8"),
@@ -74,6 +74,7 @@ test("waitlist, unsubscribe, privacy, and analytics contracts are present", asyn
     readFile(new URL("../app/analytics-consent.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/analytics.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/site-preferences.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
   ]);
 
   assert.match(schema, /unsubscribeToken/);
@@ -87,6 +88,13 @@ test("waitlist, unsubscribe, privacy, and analytics contracts are present", asyn
   assert.match(consent, /G-BQFVFK5N91/);
   assert.match(analytics, /ANALYTICS_CONSENT_KEY/);
   assert.match(preferences, /window\.addEventListener\("storage"/);
+  assert.match(preferences, /prefers-color-scheme/);
+  assert.match(preferences, /addEventListener\("change"/);
+  assert.match(preferences, /smartbill-theme-mode/);
+  assert.match(styles, /animation-timeline: view\(\)/);
+  assert.match(styles, /offset-path:ellipse/);
+  assert.match(styles, /receipt-laser/);
+  assert.match(styles, /prefers-reduced-motion:reduce/);
 });
 
 test("contact data handling and site metadata surfaces remain bilingual", async () => {
