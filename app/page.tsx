@@ -131,7 +131,7 @@ function FeatureVisual({ type, lang }: { type: string; lang: "ar" | "en" }) {
 }
 
 function ArabicThemeScreen({ className, alt }: { className: string; alt: string }) {
-  return <><img className={`${className} app-screen-light`} src="/smartbill-app-screen-nav-v2.png" alt={alt} width="591" height="1024" /><img className={`${className} app-screen-dark`} src="/smartbill-app-screen-dark-ar.png" alt={alt} width="591" height="1024" /></>;
+  return <><img className={`${className} app-screen-light`} src="/smartbill-app-screen-nav-v2.png" alt={alt} width="591" height="1024" /><img className={`${className} app-screen-dark`} src="/smartbill-app-screen-dark-ar-matched.png" alt={alt} width="591" height="1024" /></>;
 }
 
 function ProofVisual({ kind, lang }: { kind: "receipt" | "review" | "insight"; lang: "ar" | "en" }) {

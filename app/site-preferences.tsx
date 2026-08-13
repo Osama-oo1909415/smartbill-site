@@ -57,17 +57,29 @@ function savedThemePreference(): SiteThemePreference {
 }
 
 export function PreferencesProvider({ children, initialLanguage = "ar" }: { children: React.ReactNode; initialLanguage?: SiteLanguage }) {
-  const [lang, setLang] = useState<SiteLanguage>(() => savedLanguage(initialLanguage));
-  const [themePreference, setThemePreference] = useState<SiteThemePreference>(savedThemePreference);
-  const [systemTheme, setSystemTheme] = useState<SiteTheme>(detectedSystemTheme);
+  // Keep the first client render identical to SSR. The inline preference script
+  // still applies the stored/system theme before paint; these values sync after
+  // hydration so localStorage and matchMedia never change SSR markup mid-hydrate.
+  const [lang, setLang] = useState<SiteLanguage>(initialLanguage);
+  const [themePreference, setThemePreference] = useState<SiteThemePreference>("system");
+  const [systemTheme, setSystemTheme] = useState<SiteTheme>("light");
+  const [hydrated, setHydrated] = useState(false);
   const theme = themePreference === "system" ? systemTheme : themePreference;
 
   useEffect(() => {
+    setLang(savedLanguage(initialLanguage));
+    setThemePreference(savedThemePreference());
+    setSystemTheme(detectedSystemTheme());
+    setHydrated(true);
+  }, [initialLanguage]);
+
+  useEffect(() => {
+    if (!hydrated) return;
     document.documentElement.lang = lang;
     document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
     document.documentElement.dataset.theme = theme;
     document.documentElement.style.colorScheme = theme;
-  }, [lang, theme]);
+  }, [hydrated, lang, theme]);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
