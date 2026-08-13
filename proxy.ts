@@ -19,7 +19,7 @@ function cookieLocale(request: NextRequest): SiteLanguage {
 }
 
 function bypass(pathname: string): boolean {
-  return pathname.startsWith("/api/") || pathname.startsWith("/admin") || pathname.startsWith("/_") || pathname.includes(".");
+  return pathname === "/og" || pathname.startsWith("/api/") || pathname.startsWith("/admin") || pathname.startsWith("/_") || pathname.includes(".");
 }
 
 export function proxy(request: NextRequest) {
@@ -36,7 +36,7 @@ export function proxy(request: NextRequest) {
   const locale = cookieLocale(request);
   const url = request.nextUrl.clone();
   url.pathname = `/${locale}${pathname === "/" ? "" : pathname}`;
-  return setLocaleCookie(NextResponse.redirect(url, 308), locale);
+  return setLocaleCookie(NextResponse.rewrite(url), locale);
 }
 
 export const config = { matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"] };
