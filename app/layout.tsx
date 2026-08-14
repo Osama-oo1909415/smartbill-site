@@ -16,12 +16,12 @@ export const metadata: Metadata = {
     description: siteDescription,
     icons: {
       icon: [
-        { url: "/favicon.ico", type: "image/x-icon", sizes: "any" },
-        { url: "/icon-32.png", type: "image/png", sizes: "32x32" },
-        { url: "/icon.png", type: "image/png", sizes: "192x192" },
+        { url: "/brand/logo-blue.svg", type: "image/svg+xml", sizes: "any" },
+        { url: "/brand/favicon-32.png", type: "image/png", sizes: "32x32" },
+        { url: "/brand/logo-blue-512.png", type: "image/png", sizes: "512x512" },
       ],
-      shortcut: [{ url: "/favicon.ico", type: "image/x-icon" }],
-      apple: [{ url: "/apple-touch-icon.png", type: "image/png", sizes: "180x180" }],
+      shortcut: [{ url: "/brand/favicon-32.png", type: "image/png" }],
+      apple: [{ url: "/brand/apple-touch-icon-180.png", type: "image/png", sizes: "180x180" }],
     },
     manifest: "/manifest.webmanifest",
     openGraph: {
@@ -31,13 +31,13 @@ export const metadata: Metadata = {
       url: SITE_URL,
       locale: "en_US",
       alternateLocale: ["ar_SA"],
-      images: [{ url: `${SITE_URL}/og?locale=en&path=%2F`, width: 1200, height: 630, type: "image/png", alt: siteTitle }, { url: `${SITE_URL}/og-image.png`, width: 1200, height: 630, type: "image/png", alt: siteTitle }],
+      images: [{ url: `${SITE_URL}/brand/og-image-1200x630.png`, width: 1200, height: 630, type: "image/png", alt: siteTitle }],
     },
     twitter: {
       card: "summary_large_image",
       title: siteTitle,
       description: siteDescription,
-      images: [`${SITE_URL}/og?locale=en&path=%2F`, `${SITE_URL}/og-image.png`],
+      images: [`${SITE_URL}/brand/og-image-1200x630.png`],
     },
     verification: verification ? { google: verification } : undefined,
 };
@@ -49,5 +49,5 @@ function localeFromCookie(value: string | undefined): SiteLanguage {
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const locale = localeFromCookie((await cookies()).get("NEXT_LOCALE")?.value);
-  return <html lang={locale} dir={locale === "ar" ? "rtl" : "ltr"} data-theme="light" suppressHydrationWarning><head><script dangerouslySetInnerHTML={{ __html: preferenceScript }} /><meta property="og:image:secure_url" content={`${SITE_URL}/og-image.png`} /><meta property="og:image:type" content="image/png" /><link rel="image_src" href={`${SITE_URL}/og-image.png`} /><JsonLd data={organizationSchema(SITE_URL)} /><JsonLd data={websiteSchema(SITE_URL)} /></head><body><PreferencesProvider initialLanguage={locale}><AnalyticsConsent />{children}</PreferencesProvider></body></html>;
+  return <html lang={locale} dir={locale === "ar" ? "rtl" : "ltr"} data-theme="light" suppressHydrationWarning><head><script dangerouslySetInnerHTML={{ __html: preferenceScript }} /><meta property="og:image:secure_url" content={`${SITE_URL}/brand/og-image-1200x630.png`} /><meta property="og:image:type" content="image/png" /><link rel="image_src" href={`${SITE_URL}/brand/og-image-1200x630.png`} /><JsonLd data={organizationSchema(SITE_URL)} /><JsonLd data={websiteSchema(SITE_URL)} /></head><body><PreferencesProvider initialLanguage={locale}><AnalyticsConsent />{children}</PreferencesProvider></body></html>;
 }

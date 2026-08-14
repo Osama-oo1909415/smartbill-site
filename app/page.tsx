@@ -180,7 +180,7 @@ export default function Home() {
 
       <section className="proof-section section-space"><div className="shell proof-grid"><div className="proof-copy"><span className="section-kicker">{t.proofKicker}</span><h2>{t.proofTitle}</h2><p>{t.proofText}</p><Link className="text-link" href="/about">{lang === "ar" ? "تعرف على المشروع" : "Learn about the project"} →</Link></div><div className="proof-cards">{t.proof.map(([title, text], index) => <article key={title}><b>0{index + 1}</b><h3>{title}</h3><p>{text}</p></article>)}</div></div></section>
 
-      <section className="waitlist-section" id="waitlist"><div className="waitlist-card shell"><div className="waitlist-copy"><span className="section-kicker light-kicker">{t.waitKicker}</span><h2>{t.waitTitle}</h2><p>{t.waitText}</p><WaitlistForm /></div><div className="waitlist-brand" aria-hidden="true"><img src="/app-icon.png" alt="" width="150" height="150" /><span>SmartBill</span><small>{lang === "ar" ? "وضوح أكثر. ضوضاء أقل." : "More clarity. Less noise."}</small></div></div></section>
+      <section className="waitlist-section" id="waitlist"><div className="waitlist-card shell"><div className="waitlist-copy"><span className="section-kicker light-kicker">{t.waitKicker}</span><h2>{t.waitTitle}</h2><p>{t.waitText}</p><WaitlistForm /></div><div className="waitlist-brand" aria-hidden="true"><img src="/brand/logo-blue.svg" alt="" width="150" height="150" /><span>SmartBill</span><small>{lang === "ar" ? "وضوح أكثر. ضوضاء أقل." : "More clarity. Less noise."}</small></div></div></section>
     </SitePage>
   );
 }

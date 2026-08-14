@@ -8,7 +8,7 @@ export const organizationSchema = (siteUrl: string) => ({
   "@type": "Organization",
   name: "SmartBill",
   url: siteUrl,
-  logo: `${siteUrl}/app-icon.png`,
+  logo: `${siteUrl}/brand/logo-blue.svg`,
   description: "Privacy-first personal finance software for clearer spending.",
 });
 

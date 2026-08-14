@@ -66,8 +66,7 @@ export function localizedMetadata(language: SiteLanguage, path: string): Metadat
   const copy = metadataForPath(path, language);
   const title = copy.title.replace(/^\s*SmartBill\s*\|\s*/i, "").replace(/\s*\|\s*SmartBill\s*$/i, "");
   const canonicalPath = localizedPath(path, language);
-  const image = language === "ar" ? "/og-image.png" : "/og-bilingual.png";
-  const dynamicImage = `${SITE_URL}/og?locale=${language}&path=${encodeURIComponent(canonicalPath)}`;
+  const socialImage = `${SITE_URL}/brand/og-image-1200x630.png`;
   return {
     title,
     description: copy.description,
@@ -85,16 +84,13 @@ export function localizedMetadata(language: SiteLanguage, path: string): Metadat
       url: `${SITE_URL}${canonicalPath}`,
       locale: language === "ar" ? "ar_SA" : "en_US",
       alternateLocale: language === "ar" ? ["en_US"] : ["ar_SA"],
-      images: [
-        { url: dynamicImage, width: 1200, height: 630, type: "image/png", alt: title },
-        { url: `${SITE_URL}${image}`, width: 1200, height: 630, type: "image/png", alt: title },
-      ],
+      images: [{ url: socialImage, width: 1200, height: 630, type: "image/png", alt: title }],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description: copy.description,
-      images: [dynamicImage, `${SITE_URL}${image}`],
+      images: [socialImage],
     },
   };
 }

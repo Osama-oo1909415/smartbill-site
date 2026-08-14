@@ -73,6 +73,7 @@ const chromeCopy = {
 export function SiteHeader() {
   const { lang, theme, setLang, toggleTheme } = useSitePreferences();
   const t = chromeCopy[lang];
+  const logoSrc = theme === "dark" ? "/brand/logo-blue.svg" : "/brand/logo-white.svg";
   function switchLanguage() {
     const next = lang === "ar" ? "en" : "ar";
     setLang(next);
@@ -84,7 +85,7 @@ export function SiteHeader() {
     <header className="site-header">
       <nav className="nav shell" aria-label={lang === "ar" ? "التنقل الرئيسي" : "Primary navigation"}>
         <Link className="brand" href="/" aria-label="SmartBill">
-          <img src="/app-icon.png" alt="" width="46" height="46" />
+          <img src={logoSrc} alt="" width="46" height="46" />
           <span><b>SmartBill</b><small>{lang === "ar" ? "سمارت بِل" : "Private finance"}</small></span>
         </Link>
 
@@ -114,14 +115,15 @@ export function SiteHeader() {
 }
 
 export function SiteFooter() {
-  const { lang } = useSitePreferences();
+  const { lang, theme } = useSitePreferences();
   const t = chromeCopy[lang];
+  const logoSrc = theme === "dark" ? "/brand/logo-blue.svg" : "/brand/logo-white.svg";
   return (
     <footer className="site-footer">
       <div className="footer-grid shell">
         <div className="footer-intro">
           <Link className="brand footer-brand" href="/">
-            <img src="/app-icon.png" alt="" width="42" height="42" />
+            <img src={logoSrc} alt="" width="42" height="42" />
             <span><b>SmartBill</b><small>{lang === "ar" ? "سمارت بِل" : "Private finance"}</small></span>
           </Link>
           <p>{t.footerText}</p>

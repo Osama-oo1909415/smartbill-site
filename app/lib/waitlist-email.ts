@@ -3,7 +3,7 @@ import { getRuntimeEnv } from "./runtime-env";
 type WaitlistEmailInput = { email: string; language: "ar" | "en"; entryId: number; unsubscribeToken: string };
 
 const SITE_URL = getRuntimeEnv("NEXT_PUBLIC_SITE_URL") ?? "http://localhost:3000";
-const LOGO_URL = `${SITE_URL}/app-icon.png`;
+const LOGO_URL = `${SITE_URL}/brand/logo-white-512.png`;
 const APP_SCREEN_URLS = {
   ar: `${SITE_URL}/smartbill-app-screen-nav-v2.png`,
   en: `${SITE_URL}/smartbill-app-screen-nav-v2-en.png`,
